@@ -1,75 +1,56 @@
 "use client";
 
 import React from "react";
-import Navbar from "@/components/Navbar";
-import TerminalHero from "@/components/TerminalHero";
-import SystemSpecs from "@/components/SystemSpecs";
-import DevOpsDashboard from "@/components/DevOpsDashboard";
-import ProjectList from "@/components/ProjectList";
-import SkillsMatrix from "@/components/SkillsMatrix";
-import ExperienceLogs from "@/components/ExperienceLogs";
-import LatestUpdates from "@/components/LatestUpdates";
-import SystemsQuiz from "@/components/SystemsQuiz";
-import Achievements from "@/components/Achievements";
-import SecureContact from "@/components/SecureContact";
-import { Terminal, Shield, RefreshCw } from "lucide-react";
+import Navbar          from "@/components/Navbar";
+import TerminalHero    from "@/components/TerminalHero";
+import SystemSpecs     from "@/components/SystemSpecs";
+import ProjectList     from "@/components/ProjectList";
+import SkillsMatrix    from "@/components/SkillsMatrix";
+import ExperienceLogs  from "@/components/ExperienceLogs";
+import LatestUpdates   from "@/components/LatestUpdates";
+import InteractiveConsole from "@/components/InteractiveConsole";
+import SystemsQuiz     from "@/components/SystemsQuiz";
+import Achievements    from "@/components/Achievements";
+import SecureContact   from "@/components/SecureContact";
+import { Terminal } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] relative selection:bg-red-950 selection:text-[var(--lobster-red)]">
-      
-      {/* Decorative cyber grid overlay */}
-      <div className="absolute inset-0 bg-repeat bg-[size:50px_50px] opacity-10 pointer-events-none -z-20 grid-bg" />
+    <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] selection:bg-[var(--lobster-red)]/20 selection:text-[var(--lobster-red)]">
 
-      {/* Global Status Navigation Header bar */}
       <Navbar />
 
-      {/* Main Layout sections */}
-      <main className="relative">
-        
-        {/* Terminal Boot Screen & Pitch */}
+      <main>
         <TerminalHero />
-
-        {/* Technical specs - About me */}
         <SystemSpecs />
-
-        {/* Interactive Architecture SVG Console */}
-        <DevOpsDashboard />
-
-        {/* Project Lists deployment logs */}
         <ProjectList />
-
-        {/* Packages installed catalog */}
         <SkillsMatrix />
-
-        {/* CI/CD Job execution logs - Experience */}
         <ExperienceLogs />
-
-        {/* Latest Blog Insights & operational triggers status */}
         <LatestUpdates />
-
-        {/* Skills assessment interactive challenge quiz */}
+        <InteractiveConsole />
         <SystemsQuiz />
-
-        {/* Badges achievements tracker visual console dashboard */}
         <Achievements />
-
-        {/* Form contact key handshake */}
         <SecureContact />
-
       </main>
 
-      {/* Terminal Footer block */}
-      <footer className="border-t border-[var(--accent-gray)] bg-[#040405] py-8 text-center text-xs font-mono text-stone-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-1.5 justify-center">
-            <Terminal className="h-4 w-4 text-[var(--lobster-red)]" />
-            <span>sys_shutdown --graceful :: © {new Date().getFullYear()} HARSHVARDHAN NS</span>
+      <footer className="border-t border-[var(--accent-gray)] bg-[var(--bg-secondary)] py-10">
+        <div className="content-wrap flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-md bg-[var(--lobster-red)]/10 border border-[var(--lobster-red)]/20 flex items-center justify-center">
+              <Terminal className="h-3.5 w-3.5 text-[var(--lobster-red)]" />
+            </div>
+            <span className="font-mono text-sm font-bold tracking-widest text-[var(--text-primary)]">HVS</span>
           </div>
-          <div className="flex gap-4">
-            <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> NODES_HEALED</span>
-            <span className="text-[var(--text-muted)]">|</span>
-            <span>SECURE_CH: TLS_1.3_TLS</span>
+
+          <p className="text-xs text-[var(--text-muted)] font-mono text-center">
+            © {new Date().getFullYear()} Harshvardhan NS — Cloud & DevOps Engineer
+          </p>
+
+          <div className="flex items-center gap-4 text-xs text-[var(--text-muted)] font-mono">
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              All systems operational
+            </span>
           </div>
         </div>
       </footer>

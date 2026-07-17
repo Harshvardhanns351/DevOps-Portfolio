@@ -1,213 +1,169 @@
 "use client";
 
 import React, { useState } from "react";
-import { FolderGit2, Check, Clock, TrendingUp, Cpu, Server, ShieldCheck, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { TrendingUp, ChevronDown, ArrowUpRight } from "lucide-react";
 
-interface ProjectItem {
-  id: string;
-  name: string;
-  replicas: string;
-  date: string;
-  metrics: string[];
-  description: string;
-  problem: string;
-  solution: string;
-  lessons: string;
-  diagram: string[];
-  tech: string[];
+interface Project {
+  id: string; name: string; date: string; status: string;
+  description: string; problem: string; solution: string; lessons: string;
+  metrics: string[]; tech: string[]; accent: string;
 }
 
-export default function ProjectList() {
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+const projects: Project[] = [
+  {
+    id:"p1", name:"Auto GitOps K8s Cluster", date:"Apr 2026", status:"Active · 5/5 nodes",
+    accent:"#FF2E2E",
+    description:"Declarative GitOps engine using ArgoCD to synchronize Kubernetes clusters with continuous testing pipelines.",
+    problem:"Configuration drift between staging and production clusters caused manual rollbacks and unsafe state changes.",
+    solution:"Single source-of-truth configs via Terraform modules and ArgoCD sync-waves with image optimization gating.",
+    lessons:"Custom health validations inside ArgoCD before traffic redirection prevent service timeouts during rollouts.",
+    metrics:["Deployment latency ↓ 60%","100% automated configuration enforcement"],
+    tech:["ArgoCD","Kubernetes","EKS","GitHub Actions","Docker","Snyk"],
+  },
+  {
+    id:"p2", name:"Terraform Multi-Cloud Engine", date:"Jun 2026", status:"Active · 12 modules",
+    accent:"#8B5CF6",
+    description:"Modular cloud architecture templates enabling multi-cloud network peering and high-availability deployments.",
+    problem:"Cross-cloud VPN peering depended on manual setups prone to human error.",
+    solution:"Cloud-agnostic Terraform modules with Sentinel check rules for compliance verification.",
+    lessons:"Separating state files between persistent networks and ephemeral compute prevents accidental deletes.",
+    metrics:["24 hrs provisioning time saved","Standardised topologies across AWS & GCP"],
+    tech:["Terraform","AWS","Google Cloud","Sentinel","Bash"],
+  },
+  {
+    id:"p3", name:"Prometheus Observability Stack", date:"Jul 2026", status:"Running · cluster DaemonSet",
+    accent:"#F59E0B",
+    description:"Centralized monitoring with Prometheus metrics, Grafana visualization, and automated PagerDuty paging.",
+    problem:"Resource leaks caused microservices to crash silently without early warning signals.",
+    solution:"Custom Node Exporters, Alertmanagers, and Grafana dashboards mapping CPU throttles against JVM behavior.",
+    lessons:"Alert rules on error rates (HTTP 5xx) over CPU thresholds alone prevent alert fatigue.",
+    metrics:["Alert response time ↓ 45%","15+ logging silos unified"],
+    tech:["Prometheus","Grafana","Alertmanager","Node Exporter","Kubernetes"],
+  },
+  {
+    id:"p4", name:"Cost Alerter Lambda Cleanup", date:"May 2026", status:"Cron-triggered · serverless",
+    accent:"#10B981",
+    description:"Event-driven serverless tool reporting idle cloud resources and auto-purging unused EBS/S3 assets.",
+    problem:"Sandbox environments accumulated redundant cloud resources creating runaway charges.",
+    solution:"Lambda scanning AWS resources, generating Slack alerts, and purging after a 48-hour timeout.",
+    lessons:"Strict tagging policies yield more accurate cost reports than API resource sweeps.",
+    metrics:["AWS sandbox costs ↓ 32%","14 TB dangling storage reclaimed"],
+    tech:["AWS Lambda","Python","CloudWatch Events","Slack API","Terraform"],
+  },
+];
 
-  const projects: ProjectItem[] = [
-    {
-      id: "proj1",
-      name: "AUTO-GITOPS-K8S-CLUSTER",
-      replicas: "Active [5/5 Nodes]",
-      date: "04-2026",
-      metrics: [
-        "Reduced deployment latency by 60%",
-        "100% automated configuration enforcement",
-      ],
-      description: "Declarative GitOps engine using ArgoCD to synchronize Kubernetes clusters with continuous testing pipelines.",
-      problem: "Engineers faced configuration drifts between staging and prod clusters, leading to manual rollbacks and unsafe state changes.",
-      solution: "Engineered single source of truth configurations using Terraform modules and ArgoCD sync-waves with image optimization gating.",
-      lessons: "Implementing custom health validations inside ArgoCD before traffic redirection is vital for avoiding service timeouts.",
-      diagram: [
-        "   [Git Commit Check] ----> [GitHub Actions Build] ----> [Docker ECR Push]   ",
-        "                                                                |         ",
-        "   [K8s Production] <---- [ArgoCD Sync Hook] <------------------+         "
-      ],
-      tech: ["ArgoCD", "Kubernetes", "EKS", "GitHub Actions", "Docker", "Snyk"],
-    },
-    {
-      id: "proj2",
-      name: "TERRAFORM-MULTI-CLOUD-ENGINE",
-      replicas: "Active [12 Modules]",
-      date: "06-2026",
-      metrics: [
-        "Saved 24 hrs provisioning time per deployment",
-        "Standardized network topologies across AWS & GCP",
-      ],
-      description: "Modular cloud architecture templates enabling multi-cloud network peerings and high-availability application architectures.",
-      problem: "Provisioning cross-cloud VPN peerings and subnet tables depended on manual dashboard setups prone to human errors.",
-      solution: "Engineered standardized cloud-agnostic Terraform modules with built-in Sentinel check rules for compliance verification.",
-      lessons: "Separating state files between persistent networks and ephemeral computing instances drastically mitigates accidental deletes.",
-      diagram: [
-        "   [Terraform Plan Config] ----> [Sentinel Policy Engine] ----> [Approved]  ",
-        "                                                                   |       ",
-        "   {AWS VPC Subnets} <====================================> {GCP VPC Hub}"
-      ],
-      tech: ["Terraform", "AWS", "Google Cloud", "Sentinel", "Bash Modules"],
-    },
-    {
-      id: "proj3",
-      name: "PROMETHEUS-OBSERVE-STACK",
-      replicas: "Running [Cluster DaemonSet]",
-      date: "07-2026",
-      metrics: [
-        "Improved Alert response action time by 45%",
-        "Consolidated 15+ logging silos into unified dashboard",
-      ],
-      description: "Centralized monitoring architecture implementing Prometheus metrics collection, Grafana visualization, and automated PagerDuty paging.",
-      problem: "Resource leaks in nodes caused microservices to crash silently without early warning signals for engineering squads.",
-      solution: "Deployed customized Node Exporters, Alertmanagers, and Grafana maps mapping container CPU throttles against JVM behaviors.",
-      lessons: "Setting metric alert rules on critical rates (like network HTTP 5xx errors) rather than simple CPU triggers prevents alert fatigue.",
-      diagram: [
-        "   [Worker Pod Metrics] ----> [Prometheus Crawler] ----> [Alert Manager]    ",
-        "                                                                |         ",
-        "   [Slack Alert Broadcast] <---- [Grafana Visualization] <-----+         "
-      ],
-      tech: ["Prometheus", "Grafana", "Alertmanager", "NodeExporter", "Kubernetes"],
-    },
-    {
-      id: "proj4",
-      name: "COST-ALERTER-LAMBDA-CLEANUP",
-      replicas: "Cron-Triggered [Serverless]",
-      date: "05-2026",
-      metrics: [
-        "Cut monthly sandbox AWS expenses by 32%",
-        "Reclaimed 14 TB dangling block storage records",
-      ],
-      description: "Event-driven serverless cloud tool reporting idle staging networks and optimizing unused EBS/S3 data assets automatically.",
-      problem: "Sandbox environments accumulated isolated and redundant cloud items, creating runaway charges on billing summaries.",
-      solution: "Configured automated lambda script scanning AWS resources, generating Slack alerts, and purging resources after 48-hour timeouts.",
-      lessons: "Utilizing strict tagging policies yields better cost reports than scraping resource patterns via API sweeps.",
-      diagram: [
-        "   [Bridge Schedule Event] ----> [Lambda IAM Scan] ----> [Audit Database]   ",
-        "                                                                |         ",
-        "   [Developer Purge Option] <---- [Slack Cost Notification] <---+         "
-      ],
-      tech: ["AWS Lambda", "Python", "CloudWatch Events", "Slack API", "Terraform"],
-    }
-  ];
+export default function ProjectList() {
+  const [open, setOpen] = useState<string | null>(null);
 
   return (
-    <section id="projects" className="py-20 border-t border-[var(--accent-gray)] bg-[var(--bg-secondary)] relative">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        
-        {/* Title */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-black font-mono uppercase tracking-wider text-[var(--text-primary)]">
-            ~/production-deployments
-          </h2>
-          <div className="h-0.5 w-12 bg-[var(--lobster-red)] mt-3"></div>
-        </div>
+    <section id="projects" className="section-full">
+      <div className="content-wrap">
 
-        {/* Project grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-          {projects.map((proj) => {
-            const isExpanded = expandedId === proj.id;
+        {/* Heading */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.55 }}
+          className="mb-16"
+        >
+          <p className="font-mono text-[11px] font-semibold tracking-[0.2em] uppercase text-[var(--lobster-red)] mb-2">Work</p>
+          <h2 className="text-4xl font-black tracking-tight text-[var(--text-primary)]">Production Deployments</h2>
+          <span className="section-accent" />
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {projects.map((p, i) => {
+            const isOpen = open === p.id;
             return (
-              <div 
-                key={proj.id}
-                className="glass-card border border-[var(--accent-gray)] rounded-xl overflow-hidden p-5 bg-black/40 flex flex-col justify-between h-full"
+              <motion.article
+                key={p.id}
+                initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.5, delay: i * 0.1, ease: "easeOut" }}
+                className="glass-card flex flex-col overflow-hidden group"
               >
-                <div>
-                  
-                  {/* Deployment log block */}
-                  <div className="font-mono text-[10px] bg-stone-950 border border-stone-850 p-2.5 rounded mb-4 text-stone-400">
-                    <div className="flex justify-between items-center text-[var(--lobster-red)] font-bold mb-1.5 uppercase text-[11px] tracking-wide">
-                      <span>DEPLOYMENT: {proj.name}</span>
-                      <span className="flex items-center gap-1">
-                        <span className="status-dot online"></span>
-                        PROD
-                      </span>
+                {/* Accent bar */}
+                <div className="h-0.5 w-full" style={{ background: `linear-gradient(90deg, ${p.accent}, transparent)` }} />
+
+                <div className="p-7 flex flex-col flex-1">
+                  {/* Header */}
+                  <div className="flex items-start justify-between gap-4 mb-5">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: p.accent }} />
+                        <span className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-widest">{p.date} · {p.status}</span>
+                      </div>
+                      <h3 className="font-bold text-xl text-[var(--text-primary)] leading-tight">{p.name}</h3>
                     </div>
-                    <div className="grid grid-cols-2 gap-1 text-[10px] mt-1 text-stone-500">
-                      <span>Replicas: {proj.replicas}</span>
-                      <span className="text-right">Synced: {proj.date}</span>
-                    </div>
+                    <motion.div
+                      whileHover={{ x: 2, y: -2 }}
+                      className="w-8 h-8 rounded-lg border border-[var(--accent-gray)] flex items-center justify-center shrink-0 opacity-40 group-hover:opacity-100 group-hover:border-[var(--lobster-red)]/40 transition-all"
+                    >
+                      <ArrowUpRight className="h-4 w-4" style={{ color: p.accent }} />
+                    </motion.div>
                   </div>
 
-                  {/* ASCII Diagram representation */}
-                  <div className="font-mono text-[9px] bg-black/80 text-stone-500 p-2 border border-stone-900 rounded mb-4 overflow-x-auto select-none leading-relaxed hidden sm:block">
-                    {proj.diagram.map((line, idx) => (
-                      <div key={idx} className="whitespace-pre">{line}</div>
-                    ))}
-                  </div>
+                  {/* Description */}
+                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-5">{p.description}</p>
 
-                  <h3 className="font-bold text-base text-[var(--text-primary)] mb-2 flex items-center justify-between">
-                    {proj.name.replace(/-/g, " ")}
-                  </h3>
-
-                  <p className="text-xs text-[var(--text-secondary)] mb-4 leading-relaxed font-sans">
-                    {proj.description}
-                  </p>
-
-                  {/* Impact metrics badges */}
-                  <div className="space-y-1.5 mb-4">
-                    {proj.metrics.map((metric, idx) => (
-                      <div key={idx} className="flex items-center gap-2 text-xs font-mono text-emerald-500">
-                        <TrendingUp className="h-3.5 w-3.5 shrink-0" />
-                        <span>{metric}</span>
+                  {/* Metrics */}
+                  <div className="grid grid-cols-1 gap-2 mb-5">
+                    {p.metrics.map((m, j) => (
+                      <div key={j} className="flex items-center gap-2.5 p-2.5 rounded-lg bg-white/[0.02] border border-[var(--accent-gray)]">
+                        <TrendingUp className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
+                        <span className="text-xs text-emerald-400 font-semibold">{m}</span>
                       </div>
                     ))}
                   </div>
 
-                  {/* Tech stack tags */}
-                  <div className="flex flex-wrap gap-1.5 mb-6">
-                    {proj.tech.map((t, idx) => (
-                      <span key={idx} className="tech-pill">{t}</span>
-                    ))}
+                  {/* Tech pills */}
+                  <div className="flex flex-wrap gap-1.5 mb-5">
+                    {p.tech.map((t) => <span key={t} className="tech-pill">{t}</span>)}
                   </div>
 
+                  {/* Expand */}
+                  <div className="border-t border-[var(--accent-gray)] pt-4 mt-auto">
+                    <AnimatePresence>
+                      {isOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.35, ease: "easeOut" }}
+                          className="overflow-hidden mb-4"
+                        >
+                          <div className="space-y-4">
+                            {[
+                              { label: "Problem", text: p.problem },
+                              { label: "Solution", text: p.solution },
+                              { label: "Key lesson", text: p.lessons },
+                            ].map((item) => (
+                              <div key={item.label} className="flex gap-3">
+                                <div className="w-0.5 bg-gradient-to-b from-[var(--lobster-red)] to-transparent shrink-0 rounded-full mt-1" style={{ minHeight: "100%" }} />
+                                <div>
+                                  <p className="text-xs font-bold text-[var(--text-primary)] mb-1 font-mono uppercase tracking-widest">{item.label}</p>
+                                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{item.text}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    <button
+                      onClick={() => setOpen(isOpen ? null : p.id)}
+                      className="flex items-center gap-2 text-xs font-mono font-semibold text-[var(--text-muted)] hover:text-[var(--lobster-red)] transition-colors uppercase tracking-[0.12em]"
+                    >
+                      <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.25 }}>
+                        <ChevronDown className="h-3.5 w-3.5" />
+                      </motion.span>
+                      {isOpen ? "Collapse" : "View details"}
+                    </button>
+                  </div>
                 </div>
-
-                {/* Interactive expand details */}
-                <div className="border-t border-stone-900 pt-4 mt-auto">
-                  {isExpanded && (
-                    <div className="mb-4 text-xs font-mono space-y-3.5 text-stone-400">
-                      <div className="border-l-2 border-[var(--lobster-red)] pl-2">
-                        <span className="text-stone-300 font-bold block mb-0.5">PROBLEM_STATEMENT:</span>
-                        <span className="font-sans leading-relaxed block">{proj.problem}</span>
-                      </div>
-                      <div className="border-l-2 border-[var(--lobster-red)] pl-2">
-                        <span className="text-stone-300 font-bold block mb-0.5">TECHNICAL_SOLUTION:</span>
-                        <span className="font-sans leading-relaxed block">{proj.solution}</span>
-                      </div>
-                      <div className="border-l-2 border-[var(--lobster-red)] pl-2">
-                        <span className="text-stone-300 font-bold block mb-0.5">LESSONS_LEARNED:</span>
-                        <span className="font-sans leading-relaxed block">{proj.lessons}</span>
-                      </div>
-                    </div>
-                  )}
-
-                  <button 
-                    onClick={() => setExpandedId(isExpanded ? null : proj.id)}
-                    className="w-full flex items-center justify-between text-xs font-mono text-[var(--lobster-red)] hover:text-red-400 transition-colors uppercase tracking-wider font-bold py-1"
-                  >
-                    <span>{isExpanded ? "Collapse Details [-]" : "Expand Technical Specs [+]"}</span>
-                    <ChevronRight className={`h-4 w-4 transform transition-transform ${isExpanded ? "rotate-90" : ""}`} />
-                  </button>
-                </div>
-
-              </div>
+              </motion.article>
             );
           })}
         </div>
-
       </div>
     </section>
   );

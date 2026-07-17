@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Sakshi | Cloud & DevOps Engineer — Infrastructure Architect",
-  description: "Interactive portfolio of Harshvardhan, a specialist DevOps Engineer designing deployment automation, Kubernetes orchestration, Jenkins pipelines, and multi-cloud solutions.",
+  title: "HVS | Cloud & DevOps Engineer",
+  description: "Portfolio of Harshvardhan NS — Cloud & DevOps Engineer specializing in Kubernetes orchestration, Terraform automation, GitOps pipelines, and multi-cloud infrastructure.",
   keywords: [
     "DevOps",
     "Cloud Engineer",
@@ -12,12 +12,13 @@ export const metadata: Metadata = {
     "Terraform",
     "CI/CD",
     "ArgoCD",
-    "AWS Architect"
+    "AWS Architect",
+    "HVS"
   ],
   authors: [{ name: "Harshvardhan NS" }],
   openGraph: {
-    title: "Harshvardhan | Cloud & DevOps Engineer",
-    description: "Interactive DevOps command center portfolio showcasing Kubernetes orchestration, Terraform networks automation, and GitOps systems.",
+    title: "HVS | Cloud & DevOps Engineer",
+    description: "Portfolio showcasing Kubernetes orchestration, Terraform automation, and GitOps systems by Harshvardhan NS.",
     type: "website",
     url: "https://harsh.engineer"
   }

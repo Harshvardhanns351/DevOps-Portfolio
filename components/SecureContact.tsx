@@ -1,222 +1,184 @@
 "use client";
 
 import React, { useState } from "react";
-import { Mail, Shield, AlertTriangle, Linkedin, Github, Send, Key, FileText } from "lucide-react";
+import { motion } from "framer-motion";
+import { Mail, Send, FileText, Key } from "lucide-react";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 export default function SecureContact() {
-  const [email, setEmail] = useState("");
+  const [email,   setEmail]   = useState("");
   const [subject, setSubject] = useState("");
-  const [payload, setPayload] = useState("");
-  const [formStatus, setFormStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
+  const [status,  setStatus]  = useState<"idle"|"sending"|"success">("idle");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !payload) return;
-
-    setFormStatus("sending");
-
-    // Simulate SSL/TLS authorization & connection transmission
+    if (!email || !message) return;
+    setStatus("sending");
     setTimeout(() => {
-      setFormStatus("success");
-      setEmail("");
-      setSubject("");
-      setPayload("");
-
-      // Unlock a contact achievement badge in localstorage
+      setStatus("success");
+      setEmail(""); setSubject(""); setMessage("");
       try {
         localStorage.setItem("badge_secure_connect", "UNLOCKED");
         window.dispatchEvent(new Event("storage"));
-      } catch (err) {}
-    }, 2000);
+      } catch {}
+    }, 1800);
   };
 
   return (
-    <section id="contact" className="py-20 border-t border-[var(--accent-gray)] bg-[var(--bg-primary)] grid-bg relative">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        
-        {/* Title */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-black font-mono uppercase tracking-wider text-[var(--text-primary)]">
-            ~/establish-secure-connection
-          </h2>
-          <div className="h-0.5 w-12 bg-[var(--lobster-red)] mt-3"></div>
-        </div>
+    <section id="contact" className="py-24 border-t border-[var(--accent-gray)] line-grid">
+      <div className="content-wrap">
+
+        {/* Heading */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.5 }}
+          className="mb-14"
+        >
+          <p className="font-mono text-[11px] font-semibold tracking-widest uppercase text-[var(--lobster-red)] mb-2">Contact</p>
+          <h2 className="text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">Get in Touch</h2>
+          <span className="section-accent" />
+        </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          {/* Left Block: Connection Info parameters */}
-          <div className="lg:col-span-5 space-y-6">
-            
-            {/* Info details */}
-            <div className="glass-card border border-[var(--accent-gray)] p-6 bg-black/40">
-              <h3 className="font-mono text-xs font-bold text-[var(--lobster-red)] tracking-widest uppercase mb-4 flex items-center gap-1.5">
-                <Shield className="h-4 w-4" /> AUTHORIZED_CHANNELS
-              </h3>
-              <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-6 font-sans">
-                Submit an encrypted query packet directly to my host. The transport channel uses standard HTTPS tunnels to secure endpoints metadata data packets.
-              </p>
 
-              <div className="space-y-4 font-mono text-xs">
-                
-                <div className="flex items-center gap-3 p-3.5 border border-stone-850 bg-black/30 rounded-lg">
-                  <Mail className="h-4.5 w-4.5 text-[var(--lobster-red)] shrink-0" />
-                  <div>
-                    <span className="text-stone-550 block text-[10px] text-stone-500 uppercase">SYS_INBOUND_MAIL</span>
-                    <a href="mailto:harshvardhanns351@gmail.com" className="text-stone-200 hover:text-[var(--lobster-red)] transition-colors font-bold select-all">
-                      harshvardhanns351@gmail.com
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 p-3.5 border border-stone-850 bg-black/30 rounded-lg">
-                  <Key className="h-4.5 w-4.5 text-[var(--lobster-red)] shrink-0" />
-                  <div>
-                    <span className="text-stone-550 block text-[10px] text-stone-500 uppercase">PUBLIC_SSH_KEY</span>
-                    <span className="text-stone-300 font-bold block text-[11px] truncate select-all">
-                      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH...
-                    </span>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-            {/* Social Grid Connections & ATS Resume */}
-            <div className="glass-card border border-[var(--accent-gray)] p-5 bg-black/40">
-              <span className="font-mono text-[10px] text-stone-500 uppercase block mb-3">
-                EXTERNAL_RESOURCES
-              </span>
-              <div className="grid grid-cols-2 gap-3 font-mono text-xs">
-                
-                <a 
-                  href="https://linkedin.com/in/harshvardhan-ns" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="flex items-center justify-center gap-2 p-3 bg-stone-950 border border-stone-850 hover:border-[var(--lobster-red)]/30 rounded transition-all duration-200"
-                >
-                  <Linkedin className="h-4 w-4 text-[var(--lobster-red)]" />
-                  <span>LINKEDIN</span>
-                </a>
-
-                <a 
-                  href="https://github.com/Harshvardhanns351" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="flex items-center justify-center gap-2 p-3 bg-stone-950 border border-stone-850 hover:border-[var(--lobster-red)]/30 rounded transition-all duration-200"
-                >
-                  <Github className="h-4 w-4 text-[var(--lobster-red)]" />
-                  <span>GITHUB</span>
-                </a>
-
+          {/* Left: info */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.5, ease: "easeOut" }}
+            className="lg:col-span-5 space-y-5"
+          >
+            <div className="glass-card p-6 space-y-5">
+              <div>
+                <h3 className="font-semibold text-base text-[var(--text-primary)] mb-2">Let's connect</h3>
+                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                  Open to discussing infrastructure architecture, DevOps consulting, or just talking shop.
+                  Feel free to reach out through any of the channels below.
+                </p>
               </div>
 
-              {/* Resume download button */}
-              <div className="mt-4">
-                <a 
-                  href="/resume.pdf" 
-                  target="_blank" 
-                  className="flex items-center justify-center gap-2 p-3 w-full bg-red-950/20 border border-[var(--lobster-red)] hover:bg-[var(--lobster-red)] hover:text-black font-bold uppercase text-[11px] rounded transition-all duration-200"
-                >
-                  <FileText className="h-4.5 w-4.5" />
-                  DOWNLOAD ATS RESUME (PDF)
-                </a>
-              </div>
-            </div>
-
-          </div>
-
-          {/* Right Block: Secure Form Terminal */}
-          <div className="lg:col-span-7 glass-card border border-[var(--accent-gray)] p-6 bg-black/40 overflow-hidden">
-            <h3 className="font-mono text-xs font-bold text-[var(--lobster-red)] tracking-widest uppercase mb-4 flex items-center gap-1.5">
-              <Send className="h-4 w-4" /> SECURE_PACKET_TRASMISSION
-            </h3>
-
-            {formStatus === "success" ? (
-              <div className="text-center py-10 font-mono text-xs space-y-4">
-                <div className="w-10 h-10 rounded-full bg-emerald-950/50 border border-emerald-900 text-emerald-500 font-bold flex items-center justify-center mx-auto text-sm animate-bounce">
-                  ✓
+              {/* Email */}
+              <div className="flex items-start gap-3.5 p-4 rounded-xl border border-[var(--accent-gray)] bg-white/[0.015]">
+                <div className="w-8 h-8 rounded-lg bg-[var(--lobster-red)]/10 border border-[var(--lobster-red)]/20 flex items-center justify-center shrink-0">
+                  <Mail className="h-4 w-4 text-[var(--lobster-red)]" />
                 </div>
                 <div>
-                  <h4 className="text-emerald-500 font-bold text-sm uppercase">CONNECTION TRANSMITTED</h4>
-                  <p className="text-stone-500 text-[11px] mt-1 leading-relaxed">
-                    Session payload handshake completed successfully.<br />
-                    Response packet queued on remote system node scheduler.
-                  </p>
+                  <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-muted)] mb-0.5">Email</p>
+                  <a
+                    href="mailto:harshvardhanns351@gmail.com"
+                    className="text-sm font-semibold text-[var(--text-primary)] hover:text-[var(--lobster-red)] transition-colors"
+                  >
+                    harshvardhanns351@gmail.com
+                  </a>
                 </div>
-                <button 
-                  onClick={() => setFormStatus("idle")} 
-                  className="btn-outline text-[11px]"
-                >
-                  TRANSMIT ANOTHER DATA PACKET
+              </div>
+
+              {/* SSH Key */}
+              <div className="flex items-start gap-3.5 p-4 rounded-xl border border-[var(--accent-gray)] bg-white/[0.015]">
+                <div className="w-8 h-8 rounded-lg bg-[var(--lobster-red)]/10 border border-[var(--lobster-red)]/20 flex items-center justify-center shrink-0">
+                  <Key className="h-4 w-4 text-[var(--lobster-red)]" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-muted)] mb-0.5">Public SSH Key</p>
+                  <p className="text-xs font-mono text-[var(--text-secondary)] truncate">ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH…</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Socials + Resume */}
+            <div className="glass-card p-5 space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { href: "https://linkedin.com/in/harshvardhan-ns",  icon: <FaLinkedin className="h-4 w-4" />, label: "LinkedIn" },
+                  { href: "https://github.com/Harshvardhanns351",      icon: <FaGithub   className="h-4 w-4" />, label: "GitHub" },
+                ].map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank" rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 p-3 rounded-lg border border-[var(--accent-gray)] text-sm font-semibold text-[var(--text-secondary)] hover:border-[var(--lobster-red)]/30 hover:text-[var(--text-primary)] transition-all"
+                  >
+                    <span className="text-[var(--lobster-red)]">{s.icon}</span>
+                    {s.label}
+                  </a>
+                ))}
+              </div>
+
+              <a
+                href="/resume.pdf"
+                target="_blank"
+                className="flex items-center justify-center gap-2 w-full p-3 rounded-lg border border-[var(--lobster-red)]/40 bg-[var(--lobster-red)]/5 text-sm font-bold text-[var(--text-primary)] hover:bg-[var(--lobster-red)]/10 hover:border-[var(--lobster-red)]/60 transition-all"
+              >
+                <FileText className="h-4 w-4 text-[var(--lobster-red)]" />
+                Download Resume (PDF)
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Right: form */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+            className="lg:col-span-7 glass-card p-6"
+          >
+            {status === "success" ? (
+              <div className="flex flex-col items-center justify-center text-center py-14 gap-5">
+                <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
+                  <span className="text-emerald-400 text-xl font-bold">✓</span>
+                </div>
+                <div>
+                  <h4 className="text-lg font-bold text-[var(--text-primary)]">Message sent!</h4>
+                  <p className="text-sm text-[var(--text-secondary)] mt-1">I'll get back to you as soon as possible.</p>
+                </div>
+                <button onClick={() => setStatus("idle")} className="btn-outline text-sm px-5 py-2">
+                  Send another
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4 font-mono text-xs">
-                
+              <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label className="text-stone-500 text-[10px] uppercase block mb-1.5">
-                    $ client-origin-ip --mail
-                  </label>
-                  <input 
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter secure contact email address..."
-                    className="w-full bg-stone-950 border border-stone-850 focus:border-[var(--lobster-red)] outline-none rounded p-3 text-stone-200 text-xs font-mono"
+                  <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Email address</label>
+                  <input
+                    type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    className="input-base"
                   />
                 </div>
 
                 <div>
-                  <label className="text-stone-500 text-[10px] uppercase block mb-1.5">
-                    $ sys-config-subject
-                  </label>
-                  <input 
-                    type="text"
-                    required
-                    value={subject}
-                    onChange={(e) => setSubject(e.target.value)}
-                    placeholder="Enter messaging packet header subject..."
-                    className="w-full bg-stone-950 border border-stone-850 focus:border-[var(--lobster-red)] outline-none rounded p-3 text-stone-200 text-xs font-mono"
+                  <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Subject</label>
+                  <input
+                    type="text" required value={subject} onChange={(e) => setSubject(e.target.value)}
+                    placeholder="What's this about?"
+                    className="input-base"
                   />
                 </div>
 
                 <div>
-                  <label className="text-stone-500 text-[10px] uppercase block mb-1.5">
-                    $ connection-payload-text
-                  </label>
-                  <textarea 
-                    rows={4}
-                    required
-                    value={payload}
-                    onChange={(e) => setPayload(e.target.value)}
-                    placeholder="Enter encrypted text specifications data packet..."
-                    className="w-full bg-stone-950 border border-stone-850 focus:border-[var(--lobster-red)] outline-none rounded p-3 text-stone-200 text-xs font-mono resize-none leading-relaxed"
+                  <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Message</label>
+                  <textarea
+                    rows={5} required value={message} onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Tell me what you have in mind…"
+                    className="input-base resize-none"
                   />
                 </div>
 
-                {formStatus === "sending" ? (
-                  <div className="flex items-center justify-center gap-2 p-3 font-bold border border-stone-800 text-stone-500 bg-stone-950 rounded uppercase text-[11px]">
-                    <span className="w-4 h-4 border-2 border-stone-700 border-t-[var(--lobster-red)] rounded-full animate-spin"></span>
-                    <span>AUTHORIZING CRYPTO TRANSPORT...</span>
+                {status === "sending" ? (
+                  <div className="flex items-center justify-center gap-2 py-3 font-mono text-sm text-[var(--text-muted)] border border-[var(--accent-gray)] rounded-lg">
+                    <span className="w-4 h-4 border-2 border-[var(--accent-gray)] border-t-[var(--lobster-red)] rounded-full animate-spin" />
+                    Sending…
                   </div>
                 ) : (
-                  <button 
-                    type="submit"
-                    className="w-full btn-primary flex items-center justify-center gap-2"
-                  >
+                  <button type="submit" className="w-full btn-primary gap-2 py-3">
                     <Send className="h-4 w-4" />
-                    TRANSMIT SECURE DATA PACKET
+                    Send Message
                   </button>
                 )}
-
               </form>
             )}
-
-          </div>
+          </motion.div>
 
         </div>
-
       </div>
     </section>
   );

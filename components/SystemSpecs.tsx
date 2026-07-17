@@ -1,127 +1,202 @@
 "use client";
 
-import React from "react";
-import { ShieldAlert, Award, Layers, Zap, Clock, ShieldCheck } from "lucide-react";
+import React, { useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import { Award, ShieldCheck, Layers, Zap, Globe, Box } from "lucide-react";
+
+const fadeItem = (delay = 0) => ({
+  initial:     { opacity: 0, y: 24 } as const,
+  whileInView: { opacity: 1, y: 0  } as const,
+  viewport:    { once: true        } as const,
+  transition:  { duration: 0.55, delay, ease: "easeOut" } as const,
+});
+
+/* Animated skill bar */
+function SkillBar({ label, pct, color = "var(--lobster-red)" }: { label: string; pct: number; color?: string }) {
+  const ref  = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  return (
+    <div ref={ref} className="space-y-1.5">
+      <div className="flex justify-between font-mono text-xs">
+        <span className="text-[var(--text-secondary)]">{label}</span>
+        <span className="text-[var(--text-muted)]">{pct}%</span>
+      </div>
+      <div className="h-1.5 bg-[var(--accent-gray)] rounded-full overflow-hidden">
+        <motion.div
+          className="h-full rounded-full"
+          style={{ backgroundColor: color }}
+          initial={{ width: 0 }}
+          animate={{ width: inView ? `${pct}%` : 0 }}
+          transition={{ duration: 1.1, ease: "easeOut", delay: 0.1 }}
+        />
+      </div>
+    </div>
+  );
+}
 
 export default function SystemSpecs() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const inView = useInView(sectionRef, { once: true, margin: "-80px" });
+
   const specs = [
-    { label: "USER IDENTITY", value: "Harshvardhan NS" },
-    { label: "KERNEL VERSION", value: "DevOps Suite v6.2-k8s" },
-    { label: "CLOUD ENGINE", value: "AWS / GCP Multi-Cluster" },
-    { label: "CONTAINER RUN", value: "Docker / containerd" },
-    { label: "IAS PROVISION", value: "Terraform Cloud Enterprise" },
-    { label: "MONITOR LOAD", value: "Prometheus + Grafana" },
+    { icon: <Zap  className="h-4 w-4" />, label: "Identity",    value: "Harshvardhan NS" },
+    { icon: <Globe className="h-4 w-4" />, label: "Cloud",      value: "AWS · GCP · Multi-cloud" },
+    { icon: <Box  className="h-4 w-4" />, label: "Containers",  value: "Docker · containerd" },
+    { icon: <Layers className="h-4 w-4" />, label: "IaC",       value: "Terraform Cloud Enterprise" },
   ];
 
-  const certificates = [
-    { name: "AWS Certified Solutions Architect", authority: "Amazon Web Services", code: "VALIDATED" },
-    { name: "Certified Kubernetes Administrator (CKA)", authority: "Cloud Native Computing Foundation", code: "VALIDATED" },
-    { name: "HashiCorp Certified: Terraform Associate", authority: "HashiCorp", code: "ACTIVE" },
+  const certs = [
+    { name: "AWS Certified Solutions Architect",       org: "Amazon Web Services",  status: "VALIDATED", color: "text-amber-400 border-amber-500/20 bg-amber-500/6" },
+    { name: "Certified Kubernetes Administrator (CKA)", org: "CNCF",               status: "VALIDATED", color: "text-sky-400 border-sky-500/20 bg-sky-500/6" },
+    { name: "HashiCorp Certified: Terraform Associate", org: "HashiCorp",           status: "ACTIVE",    color: "text-violet-400 border-violet-500/20 bg-violet-500/6" },
+  ];
+
+  const skills = [
+    { label: "Kubernetes",    pct: 90, color: "var(--lobster-red)" },
+    { label: "AWS",           pct: 90, color: "#F59E0B" },
+    { label: "Terraform",     pct: 90, color: "#8B5CF6" },
+    { label: "Docker",        pct: 95, color: "#06B6D4" },
+    { label: "Prometheus",    pct: 85, color: "#10B981" },
+    { label: "GitHub Actions",pct: 88, color: "var(--lobster-red)" },
   ];
 
   return (
-    <section id="about" className="py-20 border-t border-[var(--accent-gray)] bg-[var(--bg-secondary)] relative">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        
-        {/* Section Title */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-black font-mono uppercase tracking-wider text-[var(--text-primary)]">
-            ~/system-specs
-          </h2>
-          <div className="h-0.5 w-12 bg-[var(--lobster-red)] mt-3"></div>
-        </div>
+    <section ref={sectionRef} id="about" className="section-full">
+      <div className="content-wrap">
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          {/* Left Grid Panel: System Specs Terminal Block */}
-          <div className="lg:col-span-5 w-full glass-card border border-[var(--accent-gray)] rounded-xl overflow-hidden p-6 bg-black/40">
-            <h3 className="font-mono text-xs font-bold text-[var(--lobster-red)] tracking-widest uppercase mb-4 flex items-center gap-2">
-              <Layers className="h-4 w-4" /> SPECS_SPECIFICATION_MATRIX
-            </h3>
-            
-            <div className="border border-stone-900 rounded p-1 font-mono text-[10px] sm:text-xs">
-              <div className="p-2 border-b border-stone-900 bg-stone-950 font-bold flex items-center justify-between text-[var(--text-secondary)]">
-                <span>PARAMETER</span>
-                <span>STATE</span>
+        {/* Heading */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.55 }}
+          className="mb-16"
+        >
+          <p className="font-mono text-[11px] font-semibold tracking-[0.2em] uppercase text-[var(--lobster-red)] mb-2">About</p>
+          <h2 className="text-4xl font-black tracking-tight text-[var(--text-primary)]">Profile & Credentials</h2>
+          <span className="section-accent" />
+        </motion.div>
+
+        {/* ── Main 3-column layout ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          {/* Col 1: Identity card */}
+          <motion.div {...fadeItem(0)} className="glass-card p-7 flex flex-col gap-6">
+            {/* Avatar / brand mark */}
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--lobster-red)]/20 to-[var(--deep-red)]/20 border border-[var(--lobster-red)]/20 flex items-center justify-center">
+                  <span className="font-black text-2xl gradient-text font-mono">HVS</span>
+                </div>
+                <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-[var(--bg-primary)]" />
               </div>
-              {specs.map((spec, idx) => (
-                <div 
-                  key={idx} 
-                  className={`flex justify-between p-2.5 font-mono ${
-                    idx % 2 === 0 ? "bg-black/30" : "bg-transparent"
-                  } border-b border-stone-900 last:border-0`}
-                >
-                  <span className="text-[var(--text-secondary)] font-medium">│ {spec.label}</span>
-                  <span className="text-[var(--text-primary)] font-bold">{spec.value}</span>
+              <div>
+                <p className="font-bold text-base text-[var(--text-primary)]">Harshvardhan NS</p>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">Cloud & DevOps Engineer</p>
+              </div>
+            </div>
+
+            <div className="border-t border-[var(--accent-gray)] pt-5 space-y-3">
+              {specs.map((s, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <span className="text-[var(--lobster-red)] opacity-60">{s.icon}</span>
+                  <div>
+                    <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-muted)]">{s.label}</p>
+                    <p className="text-sm font-semibold text-[var(--text-primary)]">{s.value}</p>
+                  </div>
                 </div>
               ))}
             </div>
 
-            {/* Simulated Specs Graph bar */}
-            <div className="mt-6">
-              <span className="font-mono text-[10px] text-[var(--text-secondary)] uppercase tracking-wider block mb-2">
-                Memory Buffer Allocations (Packages Cache)
-              </span>
-              <div className="w-full bg-stone-950 h-5 border border-stone-850 rounded overflow-hidden flex font-mono text-[10px] font-bold text-center leading-5 text-black">
-                <div className="bg-[var(--lobster-red)] h-full" style={{ width: "45%" }}>45% K8s</div>
-                <div className="bg-[var(--deep-red)] h-full text-white" style={{ width: "35%" }}>35% AWS</div>
-                <div className="bg-stone-800 h-full text-stone-400" style={{ width: "20%" }}>20% SEC</div>
+            {/* Mini stats */}
+            <div className="grid grid-cols-2 gap-3 border-t border-[var(--accent-gray)] pt-5">
+              {[
+                { n: "4+", l: "Projects" }, { n: "3+", l: "Years exp" },
+                { n: "60%", l: "Latency ↓" }, { n: "100%", l: "Config parity" },
+              ].map((s) => (
+                <div key={s.l} className="bg-white/[0.02] border border-[var(--accent-gray)] rounded-lg p-3 text-center">
+                  <div className="text-lg font-black gradient-text">{s.n}</div>
+                  <div className="text-[10px] text-[var(--text-muted)] mt-0.5 font-mono">{s.l}</div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Col 2: About + Skill bars */}
+          <motion.div {...fadeItem(0.1)} className="glass-card p-7 flex flex-col gap-6">
+            <div>
+              <h3 className="text-xl font-bold text-[var(--text-primary)] mb-3">Architecting Resilient Infrastructure</h3>
+              <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-3">
+                I close the gap between code and production with declarative GitOps models and cloud-agnostic 
+                IaC — making deployments repeatable, auditable, and safe by default.
+              </p>
+              <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
+                Pipeline designs that prioritize reliability: container security scanning, automated policy gating, 
+                and centralized metrics so every commit can safely reach production.
+              </p>
+            </div>
+
+            <div className="border-t border-[var(--accent-gray)] pt-5">
+              <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-[var(--text-muted)] mb-4">Core proficiency</p>
+              <div className="space-y-3.5">
+                {skills.map((s) => <SkillBar key={s.label} {...s} />)}
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Right Grid Panel: Professional Narrative & Certificates */}
-          <div className="lg:col-span-7 space-y-6">
-            
-            {/* About text styling */}
-            <div className="glass-card border border-[var(--accent-gray)] p-6 space-y-4">
-              <h3 className="font-bold text-lg text-[var(--text-primary)] tracking-wide">
-                Architecting Resilient Orchestrated Infrastructure
-              </h3>
-              <p className="text-[var(--text-secondary)] text-sm sm:text-[15px] leading-relaxed">
-                As a Cloud & DevOps engineer, I focus on the critical alignment between code and execution engines. I eliminate manual configuration drift using declarative GitOps models and cloud-agnostic Infrastructure as Code patterns.
-              </p>
-              <p className="text-[var(--text-secondary)] text-sm sm:text-[15px] leading-relaxed">
-                My pipeline designs emphasize reliability and rapid verification cycles—leveraging container security scanning, automated configuration gating, and metrics logging to ensure that code can deploy to production securely and immediately.
-              </p>
+          {/* Col 3: Certifications */}
+          <motion.div {...fadeItem(0.2)} className="glass-card p-7 flex flex-col gap-6">
+            <div className="flex items-center gap-2">
+              <Award className="h-5 w-5 text-[var(--lobster-red)]" />
+              <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">Certifications</h3>
             </div>
 
-            {/* Certifications Card */}
-            <div className="glass-card border border-[var(--accent-gray)] p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Award className="h-5 w-5 text-[var(--lobster-red)]" />
-                <h4 className="font-mono text-xs font-bold text-[var(--text-primary)] tracking-wider uppercase">
-                  VERIFIED_CERTIFICATIONS (LIVE STATUS)
-                </h4>
-              </div>
-
-              <div className="space-y-3 font-mono text-xs">
-                {certificates.map((cert, index) => (
-                  <div 
-                    key={index}
-                    className="flex justify-between items-center p-3 border border-stone-850 bg-black/40 rounded hover:border-[var(--lobster-red)]/30 transition-all duration-200"
-                  >
-                    <div>
-                      <div className="font-bold text-stone-200 text-[11px] sm:text-xs">
-                        {cert.name}
-                      </div>
-                      <div className="text-[10px] text-stone-500 mt-0.5">
-                        Issuer: {cert.authority}
-                      </div>
+            <div className="space-y-3 flex-1">
+              {certs.map((c, i) => (
+                <motion.div
+                  key={i}
+                  whileHover={{ x: 4 }}
+                  transition={{ duration: 0.2 }}
+                  className="p-4 rounded-xl border border-[var(--accent-gray)] bg-white/[0.015] hover:border-[var(--lobster-red)]/20 transition-colors cursor-default"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-[var(--text-primary)] leading-snug">{c.name}</p>
+                      <p className="text-xs text-[var(--text-muted)] mt-0.5 font-mono">{c.org}</p>
                     </div>
-                    <div className="flex items-center gap-1 text-[10px] bg-red-950/40 border border-red-900/30 px-2 py-0.5 rounded text-[var(--lobster-red)] font-semibold">
-                      <ShieldCheck className="h-3 w-3" />
-                      {cert.code}
-                    </div>
+                    <span className={`shrink-0 flex items-center gap-1 text-[10px] font-mono font-bold px-2.5 py-1 rounded-md border ${c.color}`}>
+                      <ShieldCheck className="h-3 w-3" /> {c.status}
+                    </span>
                   </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Allocation bar */}
+            <div className="border-t border-[var(--accent-gray)] pt-5">
+              <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-[var(--text-muted)] mb-3">Expertise split</p>
+              <div className="flex h-3 rounded-full overflow-hidden gap-px">
+                {[
+                  { w: "45%", color: "bg-[var(--lobster-red)]",  tip: "K8s 45%" },
+                  { w: "35%", color: "bg-amber-500",             tip: "AWS 35%" },
+                  { w: "20%", color: "bg-violet-500",            tip: "IaC 20%" },
+                ].map((b, i) => (
+                  <motion.div key={i} className={`${b.color} h-full`} style={{ width: b.w }}
+                    initial={{ scaleX: 0, originX: "0%" }}
+                    whileInView={{ scaleX: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.9, delay: i * 0.15, ease: "easeOut" }}
+                    title={b.tip}
+                  />
                 ))}
               </div>
+              <div className="flex gap-4 mt-2 font-mono text-[10px] text-[var(--text-muted)]">
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[var(--lobster-red)]" />Kubernetes</span>
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500" />AWS</span>
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-violet-500" />IaC</span>
+              </div>
             </div>
-
-          </div>
+          </motion.div>
 
         </div>
-
       </div>
     </section>
   );

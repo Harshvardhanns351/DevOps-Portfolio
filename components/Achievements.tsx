@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Award, ShieldAlert, Check, HelpCircle, Terminal } from "lucide-react";
+import { motion } from "framer-motion";
+import { Award, Check, Terminal, ShieldCheck } from "lucide-react";
 
 interface Badge {
   key: string;
@@ -10,118 +11,80 @@ interface Badge {
   icon: React.ReactNode;
 }
 
+const badges: Badge[] = [
+  { key: "badge_devops_master",   name: "DevOps Master",           desc: "Scored 3/3 on the engineering quiz.",     icon: <Award     className="h-5 w-5" /> },
+  { key: "badge_sysadmin",        name: "SysAdmin Competent",      desc: "Completed the competency challenge.",      icon: <Check     className="h-5 w-5" /> },
+  { key: "badge_terminal_master", name: "Shell Controller",        desc: "Ran 4+ commands in the guest console.",    icon: <Terminal  className="h-5 w-5" /> },
+  { key: "badge_secure_connect",  name: "Secure Channel",          desc: "Submitted a contact form message.",        icon: <ShieldCheck className="h-5 w-5" /> },
+];
+
 export default function Achievements() {
-  const [unlockedKeys, setUnlockedKeys] = useState<string[]>([]);
-  const [showNotification, setShowNotification] = useState<string | null>(null);
+  const [unlocked, setUnlocked] = useState<string[]>([]);
 
-  const badges: Badge[] = [
-    {
-      key: "badge_devops_master",
-      name: "DEVOPS MASTER",
-      desc: "Scored 3/3 on system engineering quiz.",
-      icon: <Award className="h-5 w-5 text-yellow-500" />
-    },
-    {
-      key: "badge_sysadmin",
-      name: "SYSADMIN COMPETENT",
-      desc: "Completed the competency test challenges.",
-      icon: <Check className="h-5 w-5 text-emerald-500" />
-    },
-    {
-      key: "badge_terminal_master",
-      name: "SHELL CONTROLLER",
-      desc: "Ran 4+ commands in guest prompt console.",
-      icon: <Terminal className="h-5 w-5 text-[var(--lobster-red)]" />
-    },
-    {
-      key: "badge_secure_connect",
-      name: "SECURE CHANNEL ESTABLISHED",
-      desc: "Submitted connection metadata payload.",
-      icon: <ShieldAlert className="h-5 w-5 text-indigo-505 text-indigo-400" />
-    }
-  ];
-
-  const checkStorage = () => {
+  const sync = () => {
     try {
-      const keys: string[] = [];
-      badges.forEach((b) => {
-        if (localStorage.getItem(b.key) === "UNLOCKED") {
-          keys.push(b.key);
-        }
-      });
-      setUnlockedKeys(keys);
-    } catch (err) {}
+      setUnlocked(badges.filter((b) => localStorage.getItem(b.key) === "UNLOCKED").map((b) => b.key));
+    } catch {}
   };
 
   useEffect(() => {
-    checkStorage();
-
-    // Listen to storage update events
-    window.addEventListener("storage", checkStorage);
-    
-    // Periodically poll local storage in case storage logs occur on same tab
-    const interval = setInterval(checkStorage, 2500);
-
-    return () => {
-      window.removeEventListener("storage", checkStorage);
-      clearInterval(interval);
-    };
+    sync();
+    window.addEventListener("storage", sync);
+    const id = setInterval(sync, 2500);
+    return () => { window.removeEventListener("storage", sync); clearInterval(id); };
   }, []);
 
   return (
-    <section className="py-20 border-t border-[var(--accent-gray)] bg-[var(--bg-primary)] items-stretch justify-center flex relative">
-      <div className="mx-auto max-w-5xl w-full px-4 sm:px-6 lg:px-8">
-        
-        {/* Title */}
-        <div className="mb-12 text-center">
-          <h2 className="text-2xl font-black font-mono uppercase tracking-wider text-[var(--text-primary)]">
-            ~/system-achievements-registry
-          </h2>
-          <p className="text-xs text-[var(--text-secondary)] mt-2 font-mono">
-            Tracks user actions. SSH into clusters, run console directives or complete evaluations to unpack awards.
-          </p>
-        </div>
+    <section className="py-24 border-t border-[var(--accent-gray)]">
+      <div className="content-wrap">
 
-        {/* Grid Box */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 w-full">
-          {badges.map((b) => {
-            const isUnlocked = unlockedKeys.includes(b.key);
+        {/* Heading */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.5 }}
+          className="mb-14 text-center"
+        >
+          <h2 className="text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">Achievements</h2>
+          <p className="text-sm text-[var(--text-secondary)] mt-3">
+            Unlock badges by exploring the site — take the quiz, use the console, or send a message.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {badges.map((b, i) => {
+            const on = unlocked.includes(b.key);
             return (
-              <div 
+              <motion.div
                 key={b.key}
-                className={`glass-card border p-4.5 rounded-xl text-left bg-black/40 flex flex-col justify-between items-start transition-all duration-300 ${
-                  isUnlocked 
-                    ? "border-[var(--lobster-red)]/40 shadow-[0_0_15px_rgba(255,46,46,0.1)]" 
-                    : "border-stone-850 opacity-40 hover:opacity-60"
+                initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.08, ease: "easeOut" }}
+                className={`glass-card p-5 flex flex-col gap-3 transition-all duration-300 ${
+                  on
+                    ? "border-[var(--lobster-red)]/30 shadow-[0_0_20px_rgba(255,46,46,0.08)]"
+                    : "opacity-40 hover:opacity-60"
                 }`}
               >
+                <div className={`w-9 h-9 rounded-lg border flex items-center justify-center ${
+                  on
+                    ? "bg-[var(--lobster-red)]/10 border-[var(--lobster-red)]/25 text-[var(--lobster-red)]"
+                    : "bg-white/[0.03] border-[var(--accent-gray)] text-[var(--text-muted)]"
+                }`}>
+                  {b.icon}
+                </div>
+
                 <div>
-                  <div className={`p-2.5 rounded-lg border inline-block mb-3.5 ${
-                    isUnlocked 
-                      ? "bg-red-950/20 border-[var(--lobster-red)]/20 text-[var(--lobster-red)]" 
-                      : "bg-stone-900 border-stone-800 text-stone-605 text-stone-500"
-                  }`}>
-                    {b.icon}
-                  </div>
-
-                  <h3 className="font-mono text-xs font-bold text-[var(--text-primary)] tracking-wide">
-                    {b.name}
-                  </h3>
-
-                  <p className="text-[10px] sm:text-xs text-stone-500 leading-relaxed font-mono mt-1.5 min-h-[40px]">
-                    {b.desc}
-                  </p>
+                  <p className="font-semibold text-sm text-[var(--text-primary)] leading-snug">{b.name}</p>
+                  <p className="text-xs text-[var(--text-muted)] mt-1 leading-relaxed">{b.desc}</p>
                 </div>
 
-                <div className="border-t border-stone-900 pt-3 mt-4 w-full font-mono text-[9px] font-bold">
-                  {isUnlocked ? (
-                    <span className="text-emerald-500 uppercase tracking-widest">[UNLOCKED_GRANTED]</span>
-                  ) : (
-                    <span className="text-stone-600 uppercase tracking-widest">[LOCKED_ENCRYPTED]</span>
-                  )}
+                <div className="mt-auto pt-3 border-t border-[var(--accent-gray)] font-mono text-[10px] font-bold uppercase tracking-widest">
+                  {on
+                    ? <span className="text-emerald-400">Unlocked</span>
+                    : <span className="text-[var(--text-muted)]">Locked</span>
+                  }
                 </div>
-
-              </div>
+              </motion.div>
             );
           })}
         </div>

@@ -1,243 +1,206 @@
 "use client";
 
-import React from "react";
-import { GitCommit, GitBranch, Cpu, Award, MessageSquare } from "lucide-react";
+import React, { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { GitCommit, GitBranch, MessageSquare, Briefcase } from "lucide-react";
 
-interface TimelineEvent {
-  role: string;
-  company: string;
-  duration: string;
-  status: "success" | "warning";
-  jobName: string;
-  metrics: string[];
-  description: string;
-  logs: string[];
+interface Exp {
+  role: string; company: string; duration: string;
+  description: string; metrics: string[]; logs: string[];
+  color: string;
+}
+
+const experiences: Exp[] = [
+  {
+    role:"Lead Cloud & DevOps Specialist", company:"Scalable Systems Corp", duration:"2024 — Present",
+    color:"#FF2E2E",
+    description:"Leading enterprise infrastructure transitions. Re-architected container scheduling and image build templates across the full CI/CD lifecycle.",
+    metrics:["CDK scripts reducing config drift to 0%","Managed 120+ microservice builds with Jenkins & GitOps"],
+    logs:["[INFO]    Initializing Terraform state checker","[INFO]    Policy check: OPA validation PASSED","[SUCCESS] 24 nodes active on EKS production cluster"],
+  },
+  {
+    role:"DevOps & Cloud Engineer Intern", company:"CloudNative Solutions", duration:"2023 — 2024",
+    color:"#8B5CF6",
+    description:"Administered development compute environments. Configured DaemonSet exporters to log custom metrics and track database transaction pool overflows.",
+    metrics:["Alert response latency ↓ 45%","CloudWatch + Grafana central dashboards integrated"],
+    logs:["[INFO]    Scanning cluster metric exporter configs","[WARNING] Disk load >80% on dev-node-03; auto-healing","[SUCCESS] Stable telemetry reporting to Prometheus"],
+  },
+  {
+    role:"R&D Labs Head", company:"Academic Cloud Computing Center", duration:"2022 — 2023",
+    color:"#10B981",
+    description:"Guided experiments on computing architectures. Prototyped hardware network configurations and local container registry systems.",
+    metrics:["Configured virtualization hubs using KVM","Linux virtualization workshops for engineering cohort"],
+    logs:["[INFO]    Mounting local image registry endpoint","[SUCCESS] Private hypervisor infrastructure operational"],
+  },
+];
+
+const logColor = (l: string) =>
+  l.includes("SUCCESS") ? "text-emerald-400" : l.includes("WARNING") ? "text-amber-400" : "text-[var(--text-secondary)]";
+
+/* Parallax card */
+function ExpCard({ exp, index }: { exp: Exp; index: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], [index % 2 === 0 ? 20 : -20, 0]);
+
+  return (
+    <motion.div ref={ref} style={{ y }}
+      initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
+      className="glass-card overflow-hidden group"
+    >
+      {/* Accent top bar */}
+      <div className="h-0.5" style={{ background: `linear-gradient(90deg, ${exp.color}, transparent)` }} />
+
+      <div className="p-6 lg:p-8">
+        {/* Header */}
+        <div className="flex flex-wrap items-start justify-between gap-4 mb-5">
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border border-[var(--accent-gray)]"
+              style={{ background: `${exp.color}15` }}>
+              <Briefcase className="h-4.5 w-4.5" style={{ color: exp.color }} />
+            </div>
+            <div>
+              <h3 className="font-bold text-lg text-[var(--text-primary)] leading-tight">{exp.role}</h3>
+              <p className="text-sm font-semibold mt-0.5" style={{ color: exp.color }}>{exp.company}</p>
+            </div>
+          </div>
+          <span className="font-mono text-xs text-[var(--text-muted)] border border-[var(--accent-gray)] rounded-lg px-3 py-1.5 shrink-0">
+            {exp.duration}
+          </span>
+        </div>
+
+        <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-5">{exp.description}</p>
+
+        {/* Metrics */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-5">
+          {exp.metrics.map((m, j) => (
+            <div key={j} className="flex items-center gap-2.5 p-2.5 rounded-lg bg-white/[0.02] border border-[var(--accent-gray)]">
+              <GitCommit className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
+              <span className="text-xs text-emerald-400">{m}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Console logs */}
+        <div className="bg-black/50 border border-[var(--accent-gray)] rounded-xl p-4 font-mono text-xs space-y-1">
+          <p className="text-[var(--text-muted)] text-[10px] uppercase tracking-widest mb-2">Terminal output</p>
+          {exp.logs.map((line, li) => (
+            <div key={li} className={`flex gap-2 ${logColor(line)}`}>
+              <span className="text-[var(--text-muted)] select-none shrink-0">{String(li+1).padStart(2,"0")}</span>
+              <span>{line}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
 }
 
 export default function ExperienceLogs() {
-  const experiences: TimelineEvent[] = [
-    {
-      role: "Lead Cloud & DevOps Specialist",
-      company: "Scalable Systems Corp",
-      duration: "2024 - PRESENT",
-      status: "success",
-      jobName: "deploy-production-vpc-pipeline",
-      metrics: [
-        "Authored modular CDK scripts reducing drift errors to 0%",
-        "Managed 120+ microservice builds with Jenkins & GitOps integrations",
-      ],
-      description: "Spearheading enterprise infrastructure transitions. Re-architected container scheduling models and container image builds templates.",
-      logs: [
-        "[INFO] Initializing Terraform state checker.",
-        "[INFO] Policy Check: OPA validation checks PASSED.",
-        "[SUCCESS] 24 nodes successfully active on EKS Cluster.",
-      ]
-    },
-    {
-      role: "DevOps & Cloud Engineer Intern",
-      company: "CloudNative Solutions",
-      duration: "2023 - 2024",
-      status: "success",
-      jobName: "build-k8s-observability-stack",
-      metrics: [
-        "Reduced Alert response latency by 45%",
-        "Integrated AWS CloudWatch dashboards with centralized Grafana",
-      ],
-      description: "Administered development compute environments. Configured daemon sets exporters to log custom metrics and track database transaction pool overflows.",
-      logs: [
-        "[INFO] Scanning cluster metric exporters configurations.",
-        "[WARNING] Disk load exceeds 80% on dev-node-03; Auto-healing active.",
-        "[SUCCESS] Exporters reporting stable metrics telemetry to Prometheus.",
-      ]
-    },
-    {
-      role: "Research & Development Labs Head",
-      company: "Academic Cloud Computing Center",
-      duration: "2022 - 2023",
-      status: "success",
-      jobName: "scaffold-hybrid-private-infrastructure",
-      metrics: [
-        "Configured physical virtualization hubs using KVM hosts",
-        "Instructed workshops on Linux virtualization configurations",
-      ],
-      description: "Guided technical experiments on computing architectures. Prototyped hardware networks configurations and local registry systems.",
-      logs: [
-        "[INFO] Mount local image registry endpoint.",
-        "[SUCCESS] Private hypervisor infrastructure operational.",
-      ]
-    }
-  ];
-
   return (
-    <section className="py-20 border-t border-[var(--accent-gray)] bg-[var(--bg-secondary)] relative">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        
-        {/* Title */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-black font-mono uppercase tracking-wider text-[var(--text-primary)]">
-            ~/deployment-timeline-logs
-          </h2>
-          <div className="h-0.5 w-12 bg-[var(--lobster-red)] mt-3"></div>
-        </div>
+    <section id="experience" className="section-full">
+      <div className="content-wrap">
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          {/* Left Block: Experience Timeline Logs */}
-          <div className="lg:col-span-8 space-y-8 relative pl-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-[var(--accent-gray)]">
-            {experiences.map((exp, index) => (
-              <div 
-                key={index}
-                className="relative group progress-event"
-              >
-                {/* Node Dot Indicator */}
-                <span className={`absolute -left-6.5 top-1.5 w-3 h-3 rounded-full border border-black ${
-                  exp.status === "success" 
-                    ? "bg-[var(--lobster-red)] shadow-[0_0_8px_var(--lobster-red)]" 
-                    : "bg-[var(--amber)] shadow-[0_0_8px_var(--amber)]"
-                }`} />
+        {/* Heading */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.55 }}
+          className="mb-16"
+        >
+          <p className="font-mono text-[11px] font-semibold tracking-[0.2em] uppercase text-[var(--lobster-red)] mb-2">Experience</p>
+          <h2 className="text-4xl font-black tracking-tight text-[var(--text-primary)]">Deployment Timeline</h2>
+          <span className="section-accent" />
+        </motion.div>
 
-                <div className="glass-card border border-[var(--accent-gray)] p-5 bg-black/40 hover:border-[var(--lobster-red)]/30 transition-all duration-200">
-                  
-                  {/* Job run header */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-900 pb-3 mb-4">
-                    <div>
-                      <span className="font-mono text-[10px] text-stone-500 block">PIPELINE RUN JOB:</span>
-                      <h3 className="font-mono text-xs font-bold text-[var(--lobster-red)] uppercase tracking-wider">
-                        {exp.jobName}
-                      </h3>
-                    </div>
-                    <div className="text-right">
-                      <span className="font-mono text-[10px] bg-stone-950 border border-stone-850 px-2.5 py-0.5 rounded text-stone-400 font-medium">
-                        {exp.duration}
-                      </span>
-                    </div>
-                  </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                  {/* Body Text */}
-                  <div className="mb-4">
-                    <h4 className="font-bold text-sm text-[var(--text-primary)] mb-1">
-                      {exp.role} <span className="text-[var(--lobster-red)]">@</span> {exp.company}
-                    </h4>
-                    <p className="text-[var(--text-secondary)] text-xs sm:text-sm leading-relaxed font-sans">
-                      {exp.description}
-                    </p>
-                  </div>
-
-                  {/* Impact metrics */}
-                  <div className="space-y-1 mb-4 select-none">
-                    {exp.metrics.map((metric, idx) => (
-                      <div key={idx} className="flex items-center gap-1.5 font-mono text-[11px] text-emerald-500">
-                        <GitCommit className="h-3 w-3 shrink-0" />
-                        <span>{metric}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Simulated terminal runner logs */}
-                  <div className="bg-stone-950 border border-stone-900 rounded p-3 font-mono text-[10px] sm:text-xs text-stone-400 space-y-1 overflow-x-auto leading-relaxed">
-                    <span className="text-stone-600 block mb-1">console_output:</span>
-                    {exp.logs.map((log, lIdx) => (
-                      <div key={lIdx} className="whitespace-pre">
-                        <span className="text-stone-700 select-none mr-2">[{lIdx + 1}]</span>
-                        <span className={log.includes("SUCCESS") ? "text-emerald-500" : log.includes("WARNING") ? "text-[var(--amber)]" : ""}>
-                          {log}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                </div>
-              </div>
-            ))}
+          {/* Timeline cards — 2/3 */}
+          <div className="lg:col-span-2 space-y-5">
+            {experiences.map((exp, i) => <ExpCard key={i} exp={exp} index={i} />)}
           </div>
 
-          {/* Right Block: Contributions Profile */}
-          <div className="lg:col-span-4 space-y-6">
-            
-            {/* Git Contributions Card */}
-            <div className="glass-card border border-[var(--accent-gray)] p-5 bg-black/40">
-              <div className="flex items-center justify-between border-b border-stone-900 pb-3 mb-4">
-                <span className="font-mono text-xs font-bold text-[var(--text-primary)] tracking-wider">
-                  GIT_CONTRIBUTIONS_LOG
-                </span>
-                <GitBranch className="h-4.5 w-4.5 text-[var(--lobster-red)]" />
+          {/* Sidebar — 1/3 */}
+          <div className="space-y-5">
+
+            {/* Git stats */}
+            <motion.div
+              initial={{ opacity: 0, x: 24 }} whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }} transition={{ duration: 0.55, delay: 0.15 }}
+              className="glass-card p-6"
+            >
+              <div className="flex items-center justify-between mb-5 pb-4 border-b border-[var(--accent-gray)]">
+                <span className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">Git Activity</span>
+                <GitBranch className="h-4 w-4 text-[var(--lobster-red)]" />
               </div>
 
-              <div className="space-y-3 font-mono text-[11px] text-stone-400">
-                <div className="flex justify-between items-center py-2 border-b border-stone-900/60">
-                  <span>Commits (L30D):</span>
-                  <span className="text-[var(--lobster-red)] font-bold">148 Commits</span>
-                </div>
-                <div className="flex justify-between items-center py-2 border-b border-stone-900/60">
-                  <span>Pull Requests:</span>
-                  <span className="text-emerald-500 font-bold">34 Merged</span>
-                </div>
-                <div className="flex justify-between items-center py-2 border-b border-stone-900/60">
-                  <span>Open Issues:</span>
-                  <span className="text-stone-300">0 Reported</span>
-                </div>
-                <div className="flex justify-between items-center py-2 pb-0">
-                  <span>Main Branch Sync:</span>
-                  <span className="text-emerald-505 text-emerald-500 font-semibold uppercase">100% Synced</span>
-                </div>
+              <div className="space-y-3 font-mono text-xs">
+                {[
+                  { l:"Commits (L30D)", v:"148",  c:"text-[var(--lobster-red)] font-bold" },
+                  { l:"PRs merged",     v:"34",   c:"text-emerald-400 font-bold" },
+                  { l:"Open issues",    v:"0",    c:"text-[var(--text-secondary)]" },
+                  { l:"Branch sync",    v:"100%", c:"text-emerald-400 font-bold" },
+                ].map((r) => (
+                  <div key={r.l} className="flex justify-between py-2.5 border-b border-[var(--accent-gray)] last:border-0">
+                    <span className="text-[var(--text-muted)]">{r.l}</span>
+                    <span className={r.c}>{r.v}</span>
+                  </div>
+                ))}
               </div>
 
-              {/* Grid-style mock contributions grid */}
-              <div className="mt-5 border-t border-stone-900 pt-4">
-                <span className="font-mono text-[10px] text-stone-500 uppercase block mb-2.5">
-                  Cluster Deployment Activity Grid:
-                </span>
-                <div className="grid grid-cols-7 gap-1 w-full max-w-[200px]">
-                  {Array.from({ length: 28 }).map((_, idx) => {
-                    const colorClasses = [
-                      "bg-stone-900/60 border border-stone-900",
-                      "bg-red-950/60 border border-red-950",
-                      "bg-red-800/40 border border-red-900/30",
-                      "bg-[var(--lobster-red)] border border-red-500/20"
-                    ];
-                    // Random-like deterministic values
-                    const val = (idx * 3) % 4;
+              {/* Activity heatmap */}
+              <div className="mt-5 pt-4 border-t border-[var(--accent-gray)]">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-muted)] mb-3">Activity heatmap</p>
+                <div className="grid grid-cols-7 gap-1">
+                  {Array.from({ length: 35 }).map((_, idx) => {
+                    const w = (idx * 7 + 3) % 5;
+                    const opacity = [0.08, 0.2, 0.4, 0.65, 0.9][w];
                     return (
-                      <div 
-                        key={idx} 
-                        className={`h-4.5 w-4.5 rounded-sm ${colorClasses[val]}`}
-                        title={`Activity weight: ${val}`}
+                      <motion.div key={idx}
+                        className="h-4 rounded-sm"
+                        style={{ backgroundColor: `rgba(255,46,46,${opacity})` }}
+                        initial={{ scale: 0 }} whileInView={{ scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.3, delay: idx * 0.012 }}
                       />
                     );
                   })}
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            {/* Speaking / Publications / Articles Card */}
-            <div className="glass-card border border-[var(--accent-gray)] p-5 bg-black/40">
-              <div className="flex items-center justify-between border-b border-stone-900 pb-3 mb-4">
-                <span className="font-mono text-xs font-bold text-[var(--text-primary)] tracking-wider">
-                  THOUGHT_LEADERSHIP
-                </span>
-                <MessageSquare className="h-4.5 w-4.5 text-[var(--lobster-red)]" />
+            {/* Publications */}
+            <motion.div
+              initial={{ opacity: 0, x: 24 }} whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }} transition={{ duration: 0.55, delay: 0.25 }}
+              className="glass-card p-6"
+            >
+              <div className="flex items-center justify-between mb-5 pb-4 border-b border-[var(--accent-gray)]">
+                <span className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">Publications</span>
+                <MessageSquare className="h-4 w-4 text-[var(--lobster-red)]" />
               </div>
-              
-              <div className="space-y-4 font-mono text-xs">
-                <div className="border-l border-stone-800 pl-3">
-                  <div className="text-[var(--lobster-red)] font-bold text-[11px]">
-                    &gt; SCALING GITOPS WITH CONFIDENCE
-                  </div>
-                  <p className="text-stone-500 text-[10px] mt-0.5">Medium Publications (Jan 2026)</p>
-                </div>
-                <div className="border-l border-stone-800 pl-3">
-                  <div className="text-[var(--lobster-red)] font-bold text-[11px]">
-                    &gt; K8S RESOURCE LIMITS SECURE TUNING
-                  </div>
-                  <p className="text-stone-500 text-[10px] mt-0.5">HashiCorp Community Blog (Oct 2025)</p>
-                </div>
+
+              <div className="space-y-4">
+                {[
+                  { t:"Scaling GitOps with Confidence",    p:"Medium",            d:"Jan 2026" },
+                  { t:"K8s Resource Limits Secure Tuning", p:"HashiCorp Community",d:"Oct 2025" },
+                ].map((a) => (
+                  <motion.div key={a.t} whileHover={{ x: 4 }} transition={{ duration: 0.2 }}
+                    className="flex gap-3 cursor-default">
+                    <div className="w-0.5 bg-gradient-to-b from-[var(--lobster-red)] to-transparent rounded-full shrink-0 mt-1 self-stretch" />
+                    <div>
+                      <p className="text-sm font-semibold text-[var(--text-primary)] leading-snug">{a.t}</p>
+                      <p className="text-xs text-[var(--text-muted)] font-mono mt-0.5">{a.p} · {a.d}</p>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
-            </div>
+            </motion.div>
 
           </div>
-
         </div>
-
       </div>
     </section>
   );
