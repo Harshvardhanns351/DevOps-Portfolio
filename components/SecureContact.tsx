@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Send, FileText, Key } from "lucide-react";
+import { Mail, Send, FileText } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 export default function SecureContact() {
@@ -70,17 +70,6 @@ export default function SecureContact() {
                   >
                     harshvardhanns351@gmail.com
                   </a>
-                </div>
-              </div>
-
-              {/* SSH Key */}
-              <div className="flex items-start gap-3.5 p-4 rounded-xl border border-[var(--accent-gray)] bg-white/[0.015]">
-                <div className="w-8 h-8 rounded-lg bg-[var(--lobster-red)]/10 border border-[var(--lobster-red)]/20 flex items-center justify-center shrink-0">
-                  <Key className="h-4 w-4 text-[var(--lobster-red)]" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-muted)] mb-0.5">Public SSH Key</p>
-                  <p className="text-xs font-mono text-[var(--text-secondary)] truncate">ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH…</p>
                 </div>
               </div>
             </div>

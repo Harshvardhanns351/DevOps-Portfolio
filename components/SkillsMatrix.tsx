@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
-import { Terminal, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 interface Skill { name: string; level: string; pct: number; desc: string; color: string; }
 interface Group { category: string; emoji: string; skills: Skill[]; }
@@ -10,33 +10,31 @@ interface Group { category: string; emoji: string; skills: Skill[]; }
 const data: Group[] = [
   { category:"Infrastructure as Code", emoji:"🏗️", skills:[
     { name:"Terraform",       level:"Expert",       pct:90, color:"#8B5CF6", desc:"Immutable infra, custom providers, state locking, module authoring, Sentinel policy gating." },
-    { name:"Ansible",         level:"Advanced",     pct:75, color:"#EF4444", desc:"Automated configuration, playbooks, vault integration, baseline hardening." },
+    { name:"Ansible",         level:"Basics",     pct:75, color:"#EF4444", desc:"Automated configuration, playbooks, vault integration, baseline hardening." },
     { name:"CloudFormation",  level:"Intermediate", pct:60, color:"#F59E0B", desc:"Native AWS deployment scripts, nested stacks, change set enforcement." },
   ]},
   { category:"Container Orchestration", emoji:"🐳", skills:[
     { name:"Kubernetes",      level:"Expert",       pct:90, color:"#3B82F6", desc:"Multi-cluster topology, CRDs, CoreDNS, Kube-Proxy, secure secrets management." },
     { name:"Docker",          level:"Expert",       pct:95, color:"#06B6D4", desc:"Multi-stage builds, bridge overlays, container lifecycle, rootless runtime." },
-    { name:"Docker Swarm",    level:"Intermediate", pct:65, color:"#0EA5E9", desc:"Decentralised deployments, overlay networking, lightweight health management." },
+    { name:"Docker Swarm",    level:"Basics", pct:65, color:"#0EA5E9", desc:"Decentralised deployments, overlay networking, lightweight health management." },
   ]},
   { category:"CI/CD & GitOps", emoji:"⚙️", skills:[
     { name:"GitHub Actions",  level:"Expert",       pct:88, color:"#FF2E2E", desc:"Custom workflows, runner tuning, dependency caching, security scanning." },
-    { name:"ArgoCD",          level:"Advanced",     pct:80, color:"#F97316", desc:"Sync waves, health checks, declarative GitOps across multi-tenant clusters." },
+    { name:"ArgoCD",          level:"Intermediate",     pct:80, color:"#F97316", desc:"Sync waves, health checks, declarative GitOps across multi-tenant clusters." },
     { name:"Jenkins",         level:"Intermediate", pct:68, color:"#EAB308", desc:"Groovy pipelines, distributed master-agent setups, integration APIs." },
   ]},
   { category:"Cloud Infrastructure", emoji:"☁️", skills:[
     { name:"AWS",             level:"Expert",       pct:90, color:"#F59E0B", desc:"VPC, Transit Gateway, IAM least-privilege, EKS, Lambda, RDS." },
-    { name:"GCP",             level:"Advanced",     pct:75, color:"#10B981", desc:"GKE, VPC host networks, Cloud IAM, Cloud Run." },
-    { name:"Azure",           level:"Intermediate", pct:60, color:"#0078D4", desc:"Active Directory, scale sets, virtual network interfaces." },
+    { name:"Azure",           level:"Basics", pct:60, color:"#0078D4", desc:"Active Directory, scale sets, virtual network interfaces." },
   ]},
   { category:"Observability", emoji:"📊", skills:[
     { name:"Prometheus",      level:"Expert",       pct:85, color:"#E05A00", desc:"PromQL, custom scrape configs, exporter hooks, SLI/SLO counters." },
     { name:"Grafana",         level:"Expert",       pct:90, color:"#FF6B35", desc:"Custom dashboards, alert integrations, log correlation, EKS maps." },
-    { name:"ELK Stack",       level:"Advanced",     pct:78, color:"#FFD600", desc:"Logstash pipelines, Elasticsearch indexing, Kibana log aggregation." },
+    { name:"ELK Stack",       level:"Basics",     pct:78, color:"#FFD600", desc:"Logstash pipelines, Elasticsearch indexing, Kibana log aggregation." },
   ]},
   { category:"Programming", emoji:"💻", skills:[
     { name:"Bash",            level:"Expert",       pct:95, color:"#22C55E", desc:"Shell automation, network diagnostics, container run modules." },
     { name:"Python",          level:"Advanced",     pct:82, color:"#3B82F6", desc:"Boto3, FastAPI REST, cron processors, JSON parsing." },
-    { name:"Go",              level:"Intermediate", pct:55, color:"#06B6D4", desc:"Static binaries, CLI apps, lightweight daemon services." },
   ]},
 ];
 
@@ -188,22 +186,15 @@ export default function SkillsMatrix() {
 
                   <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{selected.desc}</p>
 
-                  <div className="space-y-2 font-mono text-xs border-t border-[var(--accent-gray)] pt-4">
-                    {[
-                      { l:"Status",     v:"Deployed & Stable", c:"text-emerald-400" },
-                      { l:"Integrity",  v:"100% verified",     c:"text-emerald-400" },
-                      { l:"Auto-scale", v:"Enabled",           c:"text-[var(--text-secondary)]" },
-                    ].map((r) => (
-                      <div key={r.l} className="flex justify-between items-center">
-                        <span className="text-[var(--text-muted)]">{r.l}</span>
-                        <span className={r.c}>{r.v}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Shimmer bar */}
-                  <div className="h-0.5 w-full rounded-full overflow-hidden bg-[var(--accent-gray)]">
-                    <div className="h-full shimmer-bar" style={{ backgroundColor: selected.color }} />
+                  {/* Proficiency bar */}
+                  <div className="pt-4 border-t border-[var(--accent-gray)]">
+                    <div className="flex justify-between font-mono text-xs mb-2">
+                      <span className="text-[var(--text-muted)]">Proficiency</span>
+                      <span style={{ color: selected.color }}>{selected.pct}%</span>
+                    </div>
+                    <div className="h-1.5 bg-[var(--accent-gray)] rounded-full overflow-hidden">
+                      <div className="h-full rounded-full shimmer-bar" style={{ width: `${selected.pct}%`, backgroundColor: selected.color }} />
+                    </div>
                   </div>
                 </motion.div>
               ) : (

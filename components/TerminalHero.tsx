@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ChevronRight, Play, ArrowDown } from "lucide-react";
+import { Play, ArrowDown } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 
 /* ── Neural-net canvas background ───────────────── */

@@ -25,13 +25,7 @@ const experiences: Exp[] = [
     metrics:["Alert response latency ↓ 45%","CloudWatch + Grafana central dashboards integrated"],
     logs:["[INFO]    Scanning cluster metric exporter configs","[WARNING] Disk load >80% on dev-node-03; auto-healing","[SUCCESS] Stable telemetry reporting to Prometheus"],
   },
-  {
-    role:"R&D Labs Head", company:"Academic Cloud Computing Center", duration:"2022 — 2023",
-    color:"#10B981",
-    description:"Guided experiments on computing architectures. Prototyped hardware network configurations and local container registry systems.",
-    metrics:["Configured virtualization hubs using KVM","Linux virtualization workshops for engineering cohort"],
-    logs:["[INFO]    Mounting local image registry endpoint","[SUCCESS] Private hypervisor infrastructure operational"],
-  },
+
 ];
 
 const logColor = (l: string) =>
