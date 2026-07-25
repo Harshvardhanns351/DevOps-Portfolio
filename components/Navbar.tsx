@@ -16,6 +16,8 @@ export default function Navbar() {
   const [menuOpen,  setMenuOpen]  = useState(false);
   const [uptime,    setUptime]    = useState("00:00:00");
   const [active,    setActive]    = useState("");
+  const [load,      setLoad]      = useState(8);
+  const [reqs,      setReqs]      = useState(1.4);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -48,6 +50,14 @@ export default function Navbar() {
     return () => clearInterval(id);
   }, []);
 
+  useEffect(() => {
+    const id = setInterval(() => {
+      setLoad(Math.floor(Math.random() * 8) + 6);
+      setReqs(Number((Math.random() * 1.2 + 1.1).toFixed(1)));
+    }, 3000);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <>
       <header
@@ -73,14 +83,14 @@ export default function Navbar() {
           </a>
 
           {/* ── Center nav ── */}
-          <nav className="hidden md:flex items-center gap-1 mx-8">
+          <nav className="hidden md:flex items-center gap-3 mx-8">
             {navLinks.map((l) => {
               const isActive = active === l.href.slice(1);
               return (
                 <a
                   key={l.href}
                   href={l.href}
-                  className={`relative px-4 py-2 text-[13px] font-bold tracking-wide transition-all duration-200 rounded-lg
+                  className={`relative px-5 py-2 text-[15px] font-bold tracking-wide transition-all duration-200 rounded-lg
                     ${isActive
                       ? "text-[var(--text-primary)]"
                       : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/[0.04]"
@@ -101,7 +111,13 @@ export default function Navbar() {
 
           {/* ── Right ── */}
           <div className="flex items-center gap-3 shrink-0">
-            <span className="hidden xl:flex items-center gap-1.5 font-mono text-[11px] text-[var(--text-muted)] border border-[var(--accent-gray)] rounded-md px-2.5 py-1">
+            <span className="hidden lg:flex items-center gap-1.5 font-mono text-[10px] text-[var(--text-muted)] border border-[var(--accent-gray)] rounded-md px-2.5 py-1 select-none">
+              CPU&nbsp;<span className="text-emerald-400 font-semibold tabular-nums">{load}%</span>
+            </span>
+            <span className="hidden lg:flex items-center gap-1.5 font-mono text-[10px] text-[var(--text-muted)] border border-[var(--accent-gray)] rounded-md px-2.5 py-1 select-none">
+              REQS&nbsp;<span className="text-[var(--lobster-red)] font-semibold tabular-nums">{reqs}/s</span>
+            </span>
+            <span className="hidden xl:flex items-center gap-1.5 font-mono text-[10px] text-[var(--text-muted)] border border-[var(--accent-gray)] rounded-md px-2.5 py-1 select-none">
               UP&nbsp;<span className="text-[var(--text-secondary)] font-semibold tabular-nums">{uptime}</span>
             </span>
 

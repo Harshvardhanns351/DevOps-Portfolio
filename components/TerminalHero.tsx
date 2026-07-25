@@ -17,6 +17,7 @@ function NeuralCanvas() {
     let raf: number;
     const particles: { x: number; y: number; vx: number; vy: number }[] = [];
     const N = 55;
+    const mouse = { x: -1000, y: -1000 };
 
     const resize = () => {
       canvas.width  = canvas.offsetWidth;
@@ -24,6 +25,18 @@ function NeuralCanvas() {
     };
     resize();
     window.addEventListener("resize", resize);
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    };
+    const handleMouseLeave = () => {
+      mouse.x = -1000;
+      mouse.y = -1000;
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseleave", handleMouseLeave);
 
     for (let i = 0; i < N; i++) {
       particles.push({
@@ -36,6 +49,8 @@ function NeuralCanvas() {
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw particles
       particles.forEach((p) => {
         p.x += p.vx; p.y += p.vy;
         if (p.x < 0 || p.x > canvas.width)  p.vx *= -1;
@@ -45,6 +60,8 @@ function NeuralCanvas() {
         ctx.fillStyle = "rgba(255,46,46,0.45)";
         ctx.fill();
       });
+
+      // Draw particle-to-particle connections
       for (let i = 0; i < N; i++) {
         for (let j = i + 1; j < N; j++) {
           const dx = particles[i].x - particles[j].x;
@@ -60,14 +77,38 @@ function NeuralCanvas() {
           }
         }
       }
+
+      // Draw particle-to-mouse connections
+      if (mouse.x > -1000 && mouse.y > -1000) {
+        particles.forEach((p) => {
+          const dx = p.x - mouse.x;
+          const dy = p.y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 150) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.strokeStyle = `rgba(255,46,46,${(1 - dist / 150) * 0.28})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        });
+      }
+
       raf = requestAnimationFrame(draw);
     };
     draw();
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseleave", handleMouseLeave);
+    };
   }, []);
 
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />;
 }
+
 
 /* ── Animated counter ────────────────────────────── */
 function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
@@ -288,7 +329,7 @@ export default function TerminalHero() {
                   <span className="w-3 h-3 rounded-full bg-[#FEBC2E] opacity-60" />
                   <span className="w-3 h-3 rounded-full bg-[#28C840] opacity-60" />
                 </div>
-                <span className="font-mono text-[11px] text-[var(--text-muted)]">root@hvs — bash — 80×24</span>
+                <span className="font-mono text-[11px] text-[var(--text-muted)]">hvs — bash</span>
                 <span className="flex items-center gap-1.5 font-mono text-[10px] text-emerald-400 font-bold">
                   <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping" /> SECURE
                 </span>
@@ -296,16 +337,15 @@ export default function TerminalHero() {
 
               {/* Body */}
               <div className="p-5 h-[380px] md:h-[420px] overflow-y-auto font-mono text-xs leading-relaxed bg-[#010104]/80 space-y-2.5 scrollbar-none">
-                <div className="text-[var(--text-muted)]">Last login: {new Date().toLocaleDateString()} · session ID: hvs-{Math.floor(Math.random()*9999)}</div>
+                <div className="text-[var(--text-muted)]">Last login: {new Date().toLocaleDateString()}</div>
 
                 {visible.map((i) => {
                   const s = commandFlow[i];
                   return (
                     <div key={i} className="space-y-0.5">
-                      <div className="flex items-center gap-1 text-[var(--lobster-red)] font-semibold">
-                        <span className="text-[var(--text-muted)]">root@hvs</span>
-                        <span className="text-[var(--text-muted)]">~$</span>
-                        <span className="ml-1">{s.command}</span>
+                      <div className="flex items-center gap-1.5 text-[var(--lobster-red)] font-semibold">
+                        <span className="text-[var(--text-muted)] select-none">$</span>
+                        <span>{s.command}</span>
                       </div>
                       <div className="pl-0 text-[var(--text-secondary)]">
                         {typeof s.output === "function" ? s.output() : s.output}
@@ -315,18 +355,17 @@ export default function TerminalHero() {
                 })}
 
                 {tidx < commandFlow.length && (
-                  <div className="flex items-center gap-1 font-semibold">
-                    <span className="text-[var(--text-muted)]">root@hvs</span>
-                    <span className="text-[var(--text-muted)]">~$</span>
-                    <span className="ml-1 text-[var(--lobster-red)]">
+                  <div className="flex items-center gap-1.5 font-semibold">
+                    <span className="text-[var(--text-muted)] select-none">$</span>
+                    <span className="text-[var(--lobster-red)]">
                       {typed}<span className="inline-block w-[7px] h-[13px] bg-[var(--lobster-red)] cursor-blink ml-0.5 align-middle" />
                     </span>
                   </div>
                 )}
 
                 {tidx >= commandFlow.length && (
-                  <div className="mt-3 pt-3 border-t border-[var(--accent-gray)] flex items-center gap-1">
-                    <span className="text-[var(--text-muted)]">root@hvs ~$</span>
+                  <div className="mt-3 pt-3 border-t border-[var(--accent-gray)] flex items-center gap-1.5">
+                    <span className="text-[var(--text-muted)] select-none">$</span>
                     <span className="ml-1 inline-block w-[7px] h-[13px] bg-[var(--text-muted)] cursor-blink" />
                   </div>
                 )}
