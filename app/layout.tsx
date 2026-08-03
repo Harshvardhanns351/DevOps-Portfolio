@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "HVS | Cloud & DevOps Engineer",
-  description: "Portfolio of Harshvardhan NS — Cloud & DevOps Engineer specializing in Kubernetes orchestration, Terraform automation, GitOps pipelines, and multi-cloud infrastructure.",
+  description: "Portfolio of Harshavardhan S — Cloud & DevOps Engineer specializing in Kubernetes orchestration, Terraform automation, GitOps pipelines, and multi-cloud infrastructure.",
   keywords: [
     "DevOps",
     "Cloud Engineer",
@@ -15,10 +15,17 @@ export const metadata: Metadata = {
     "AWS Architect",
     "HVS"
   ],
-  authors: [{ name: "Harshvardhan NS" }],
+  authors: [{ name: "Harshavardhan S" }],
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
   openGraph: {
     title: "HVS | Cloud & DevOps Engineer",
-    description: "Portfolio showcasing Kubernetes orchestration, Terraform automation, and GitOps systems by Harshvardhan NS.",
+    description: "Portfolio showcasing Kubernetes orchestration, Terraform automation, and GitOps systems by Harshavardhan S.",
     type: "website",
     url: "https://harsh.engineer"
   }

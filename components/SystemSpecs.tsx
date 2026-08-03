@@ -39,7 +39,7 @@ export default function SystemSpecs() {
   const inView = useInView(sectionRef, { once: true, margin: "-80px" });
 
   const specs = [
-    { icon: <Zap  className="h-4 w-4" />, label: "Identity",    value: "Harshvardhan NS" },
+    { icon: <Zap  className="h-4 w-4" />, label: "Identity",    value: "Harshavardhan S" },
     { icon: <Globe className="h-4 w-4" />, label: "Cloud",      value: "AWS · GCP · Multi-cloud" },
     { icon: <Box  className="h-4 w-4" />, label: "Containers",  value: "Docker · containerd" },
     { icon: <Layers className="h-4 w-4" />, label: "IaC",       value: "Terraform Cloud Enterprise" },
@@ -89,7 +89,7 @@ export default function SystemSpecs() {
                 <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-[var(--bg-primary)]" />
               </div>
               <div>
-                <p className="font-bold text-base text-[var(--text-primary)]">Harshvardhan NS</p>
+                <p className="font-bold text-base text-[var(--text-primary)]">Harshavardhan S</p>
                 <p className="text-xs text-[var(--text-secondary)] mt-0.5">Cloud & DevOps Engineer</p>
               </div>
             </div>

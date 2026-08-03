@@ -158,7 +158,7 @@ const MiniTable = ({ cols, rows }: { cols: string[]; rows: string[][] }) => (
 
 const commandFlow: Step[] = [
   { command: 'echo "Initializing HVS DevOps Console..."', output: "Boot sequence complete — TLS 1.3 session authorized.", delay: 600 },
-  { command: "whoami", output: "Harshvardhan NS  ·  Cloud & DevOps Engineer  ·  Infrastructure Architect", delay: 800 },
+  { command: "whoami", output: "Harshavardhan S  ·  Cloud & DevOps Engineer  ·  Infrastructure Architect", delay: 800 },
   {
     command: "docker ps --format table",
     output: () => <MiniTable cols={["CONTAINER","IMAGE","STATUS","NAME"]} rows={[

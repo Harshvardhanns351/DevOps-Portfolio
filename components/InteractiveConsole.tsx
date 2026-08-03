@@ -16,7 +16,7 @@ const COMMANDS: Record<string, string[]> = {
     "  clear     —  Clear the console",
   ],
   about: [
-    "Harshvardhan NS  ·  Cloud & DevOps Engineer",
+    "Harshavardhan S  ·  Cloud & DevOps Engineer",
     "Focus: Containerization, GitOps, IaC, multi-cloud infrastructure.",
     "Specialty: AWS networking, microservices optimization, telemetry.",
   ],

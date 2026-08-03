@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <!-- Dark background with subtle rounded corners -->
+  <rect width="64" height="64" rx="14" fill="#0A0A0E"/>
+  <!-- Red glow halo behind the mark -->
+  <rect width="64" height="64" rx="14" fill="url(#glowGrad)" opacity="0.35"/>
+  <!-- Outer red border ring -->
+  <rect x="1.5" y="1.5" width="61" height="61" rx="13" stroke="#FF2E2E" stroke-width="1.5" opacity="0.6"/>
+
+  <!-- H letter — left vertical, right vertical, crossbar -->
+  <rect x="10" y="16" width="5" height="22" rx="1.5" fill="#FF2E2E"/>
+  <rect x="10" y="25.5" width="13" height="4" rx="1.5" fill="#FF2E2E"/>
+  <rect x="18" y="16" width="5" height="22" rx="1.5" fill="#FF2E2E"/>
+
+  <!-- V letter — left diagonal, right diagonal -->
+  <polygon points="25,16 30,16 35,38 33,38 29.5,26 26,38 24,38" fill="#F1F2F6"/>
+
+  <!-- S letter — top arc bar, middle bar, bottom arc bar -->
+  <path d="M39 22 Q39 16 45.5 16 Q52 16 52 21 L48 21 Q48 19.5 45.5 19.5 Q43 19.5 43 22 Q43 24 46 24.5 L48 25 Q52 26 52 31 Q52 38 45.5 38 Q39 38 39 33 L43 33 Q43 34.5 45.5 34.5 Q49 34.5 49 31 Q49 29 46 28.5 L44 28 Q39 26.5 39 22Z" fill="#F1F2F6"/>
+
+  <!-- Accent underline dot -->
+  <rect x="10" y="42" width="44" height="2" rx="1" fill="#FF2E2E" opacity="0.5"/>
+  <rect x="27" y="42" width="10" height="2" rx="1" fill="#FF2E2E"/>
+
+  <defs>
+    <radialGradient id="glowGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF2E2E"/>
+      <stop offset="100%" stop-color="#FF2E2E" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>

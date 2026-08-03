@@ -35,7 +35,7 @@ export default function Home() {
           </div>
 
           <p className="text-sm text-[var(--text-muted)] text-center">
-            © {new Date().getFullYear()} Harshvardhan NS · Cloud & DevOps Engineer
+            © {new Date().getFullYear()} Harshavardhan S · Cloud & DevOps Engineer
           </p>
 
           <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
