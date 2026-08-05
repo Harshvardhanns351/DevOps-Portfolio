@@ -14,10 +14,7 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled,  setScrolled]  = useState(false);
   const [menuOpen,  setMenuOpen]  = useState(false);
-  const [uptime,    setUptime]    = useState("00:00:00");
   const [active,    setActive]    = useState("");
-  const [load,      setLoad]      = useState(8);
-  const [reqs,      setReqs]      = useState(1.4);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -36,26 +33,6 @@ export default function Navbar() {
     );
     ids.forEach((id) => { const el = document.getElementById(id); if (el) obs.observe(el); });
     return () => obs.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const start = Date.now();
-    const id = setInterval(() => {
-      const d = Date.now() - start;
-      const h = String(Math.floor(d / 3_600_000)).padStart(2, "0");
-      const m = String(Math.floor((d % 3_600_000) / 60_000)).padStart(2, "0");
-      const s = String(Math.floor((d % 60_000) / 1_000)).padStart(2, "0");
-      setUptime(`${h}:${m}:${s}`);
-    }, 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setLoad(Math.floor(Math.random() * 8) + 6);
-      setReqs(Number((Math.random() * 1.2 + 1.1).toFixed(1)));
-    }, 3000);
-    return () => clearInterval(id);
   }, []);
 
   return (
@@ -111,16 +88,6 @@ export default function Navbar() {
 
           {/* ── Right ── */}
           <div className="flex items-center gap-3 shrink-0">
-            <span className="hidden lg:flex items-center gap-1.5 font-mono text-[10px] text-[var(--text-muted)] border border-[var(--accent-gray)] rounded-md px-2.5 py-1 select-none">
-              CPU&nbsp;<span className="text-emerald-400 font-semibold tabular-nums">{load}%</span>
-            </span>
-            <span className="hidden lg:flex items-center gap-1.5 font-mono text-[10px] text-[var(--text-muted)] border border-[var(--accent-gray)] rounded-md px-2.5 py-1 select-none">
-              REQS&nbsp;<span className="text-[var(--lobster-red)] font-semibold tabular-nums">{reqs}/s</span>
-            </span>
-            <span className="hidden xl:flex items-center gap-1.5 font-mono text-[10px] text-[var(--text-muted)] border border-[var(--accent-gray)] rounded-md px-2.5 py-1 select-none">
-              UP&nbsp;<span className="text-[var(--text-secondary)] font-semibold tabular-nums">{uptime}</span>
-            </span>
-
             <a href="#contact" className="hidden sm:inline-flex btn-primary text-[11px] px-4 py-2 rounded-lg">
               Contact
             </a>

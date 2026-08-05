@@ -109,7 +109,7 @@ export default function SystemSpecs() {
             {/* Mini stats */}
             <div className="grid grid-cols-2 gap-3 border-t border-[var(--accent-gray)] pt-5">
               {[
-                { n: "4+", l: "Projects" }, { n: "3+", l: "Years exp" },
+                { n: "4+", l: "Projects" }, { n: "Fresher", l: "Experience" },
                 { n: "60%", l: "Latency ↓" }, { n: "100%", l: "Config parity" },
               ].map((s) => (
                 <div key={s.l} className="bg-white/[0.02] border border-[var(--accent-gray)] rounded-lg p-3 text-center">
