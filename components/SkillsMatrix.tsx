@@ -11,30 +11,30 @@ const data: Group[] = [
   { category:"Infrastructure as Code", emoji:"🏗️", skills:[
     { name:"Terraform",       level:"Expert",       pct:90, color:"#8B5CF6", desc:"Immutable infra, custom providers, state locking, module authoring, Sentinel policy gating." },
     { name:"Ansible",         level:"Basics",     pct:75, color:"#EF4444", desc:"Automated configuration, playbooks, vault integration, baseline hardening." },
-    { name:"CloudFormation",  level:"Intermediate", pct:60, color:"#F59E0B", desc:"Native AWS deployment scripts, nested stacks, change set enforcement." },
+    { name:"CloudFormation",  level:"Intermediate", pct:50, color:"#F59E0B", desc:"Native AWS deployment scripts, nested stacks, change set enforcement." },
   ]},
   { category:"Container Orchestration", emoji:"🐳", skills:[
     { name:"Kubernetes",      level:"Expert",       pct:90, color:"#3B82F6", desc:"Multi-cluster topology, CRDs, CoreDNS, Kube-Proxy, secure secrets management." },
     { name:"Docker",          level:"Expert",       pct:95, color:"#06B6D4", desc:"Multi-stage builds, bridge overlays, container lifecycle, rootless runtime." },
-    { name:"Docker Swarm",    level:"Basics", pct:65, color:"#0EA5E9", desc:"Decentralised deployments, overlay networking, lightweight health management." },
+    { name:"Docker Swarm",    level:"Basics", pct:50, color:"#0EA5E9", desc:"Decentralised deployments, overlay networking, lightweight health management." },
   ]},
   { category:"CI/CD & GitOps", emoji:"⚙️", skills:[
-    { name:"GitHub Actions",  level:"Expert",       pct:88, color:"#FF2E2E", desc:"Custom workflows, runner tuning, dependency caching, security scanning." },
-    { name:"ArgoCD",          level:"Intermediate",     pct:80, color:"#F97316", desc:"Sync waves, health checks, declarative GitOps across multi-tenant clusters." },
+    { name:"GitHub Actions",  level:"Expert",       pct:85, color:"#FF2E2E", desc:"Custom workflows, runner tuning, dependency caching, security scanning." },
+    { name:"ArgoCD",          level:"Intermediate",     pct:50, color:"#F97316", desc:"Sync waves, health checks, declarative GitOps across multi-tenant clusters." },
     { name:"Jenkins",         level:"Intermediate", pct:68, color:"#EAB308", desc:"Groovy pipelines, distributed master-agent setups, integration APIs." },
   ]},
   { category:"Cloud Infrastructure", emoji:"☁️", skills:[
     { name:"AWS",             level:"Expert",       pct:90, color:"#F59E0B", desc:"VPC, Transit Gateway, IAM least-privilege, EKS, Lambda, RDS." },
-    { name:"Azure",           level:"Basics", pct:60, color:"#0078D4", desc:"Active Directory, scale sets, virtual network interfaces." },
+    { name:"Azure",           level:"Basics", pct:50, color:"#0078D4", desc:"Active Directory, scale sets, virtual network interfaces." },
   ]},
   { category:"Observability", emoji:"📊", skills:[
     { name:"Prometheus",      level:"Expert",       pct:85, color:"#E05A00", desc:"PromQL, custom scrape configs, exporter hooks, SLI/SLO counters." },
-    { name:"Grafana",         level:"Expert",       pct:90, color:"#FF6B35", desc:"Custom dashboards, alert integrations, log correlation, EKS maps." },
-    { name:"ELK Stack",       level:"Basics",     pct:78, color:"#FFD600", desc:"Logstash pipelines, Elasticsearch indexing, Kibana log aggregation." },
+    { name:"Grafana",         level:"Expert",       pct:70, color:"#FF6B35", desc:"Custom dashboards, alert integrations, log correlation, EKS maps." },
+    { name:"ELK Stack",       level:"Basics",     pct:50, color:"#FFD600", desc:"Logstash pipelines, Elasticsearch indexing, Kibana log aggregation." },
   ]},
   { category:"Programming", emoji:"💻", skills:[
-    { name:"Bash",            level:"Expert",       pct:95, color:"#22C55E", desc:"Shell automation, network diagnostics, container run modules." },
-    { name:"Python",          level:"Advanced",     pct:82, color:"#3B82F6", desc:"Boto3, FastAPI REST, cron processors, JSON parsing." },
+    { name:"Bash",            level:"Expert",       pct:80, color:"#22C55E", desc:"Shell automation, network diagnostics, container run modules." },
+    { name:"Python",          level:"Advanced",     pct:60, color:"#3B82F6", desc:"Boto3, FastAPI REST, cron processors, JSON parsing." },
   ]},
 ];
 

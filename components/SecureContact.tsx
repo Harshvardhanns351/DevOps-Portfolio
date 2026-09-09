@@ -106,17 +106,6 @@ export default function SecureContact() {
                 </div>
               </div>
 
-              {/* How it works note */}
-              <div className="p-4 rounded-xl border border-[var(--accent-gray)] bg-white/[0.01] space-y-2">
-                <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-muted)]">How your data is handled</p>
-                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                  Messages are delivered to my email via{" "}
-                  <a href="https://formspree.io" target="_blank" rel="noopener noreferrer"
-                    className="text-[var(--lobster-red)] hover:underline">Formspree</a>.
-                  Your name, email, and message are stored in the Formspree dashboard
-                  and never shared with any third party. No tracking, no spam.
-                </p>
-              </div>
             </div>
 
             {/* Socials + Resume */}
@@ -202,12 +191,6 @@ export default function SecureContact() {
                   </button>
                 )}
 
-                <p className="text-[11px] text-[var(--text-muted)] text-center leading-relaxed">
-                  Powered by{" "}
-                  <a href="https://formspree.io" target="_blank" rel="noopener noreferrer"
-                    className="hover:text-[var(--text-secondary)] transition-colors">Formspree</a>
-                  {" "}— your data is sent securely over HTTPS and delivered to my inbox only.
-                </p>
               </form>
             )}
           </motion.div>
