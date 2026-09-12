@@ -84,7 +84,7 @@ export default function SkillsMatrix() {
           viewport={{ once: true }} transition={{ duration: 0.55 }}
           className="mb-16"
         >
-          <p className="font-mono text-[11px] font-semibold tracking-[0.2em] uppercase text-[var(--lobster-red)] mb-2">Skills</p>
+          <p className="section-label">Skills</p>
           <h2 className="text-4xl font-black tracking-tight text-[var(--text-primary)]">Technical Stack</h2>
           <span className="section-accent" />
         </motion.div>

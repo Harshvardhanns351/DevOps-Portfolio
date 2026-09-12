@@ -70,7 +70,7 @@ export default function SystemSpecs() {
           viewport={{ once: true }} transition={{ duration: 0.55 }}
           className="mb-16"
         >
-          <p className="font-mono text-[11px] font-semibold tracking-[0.2em] uppercase text-[var(--lobster-red)] mb-2">About</p>
+          <p className="section-label">About</p>
           <h2 className="text-4xl font-black tracking-tight text-[var(--text-primary)]">Profile & Credentials</h2>
           <span className="section-accent" />
         </motion.div>

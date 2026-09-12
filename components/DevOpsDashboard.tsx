@@ -68,7 +68,7 @@ export default function DevOpsDashboard() {
           viewport={{ once: true }} transition={{ duration: 0.55 }}
           className="mb-16"
         >
-          <p className="font-mono text-[11px] font-semibold tracking-[0.2em] uppercase text-[var(--lobster-red)] mb-2">Infrastructure</p>
+          <p className="section-label">Infrastructure</p>
           <h2 className="text-4xl font-black tracking-tight text-[var(--text-primary)]">Architecture Overview</h2>
           <span className="section-accent" />
         </motion.div>

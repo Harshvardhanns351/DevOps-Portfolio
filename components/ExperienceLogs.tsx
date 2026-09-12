@@ -1,17 +1,11 @@
 "use client";
 
-import React from "react";
 import { motion } from "framer-motion";
-import { Briefcase, TrendingUp, MessageSquare } from "lucide-react";
+import { Briefcase, TrendingUp, Calendar, Building2 } from "lucide-react";
 
 interface Exp {
-  role: string;
-  company: string;
-  duration: string;
-  type: string;
-  description: string;
-  metrics: string[];
-  color: string;
+  role: string; company: string; duration: string; type: string;
+  description: string; metrics: string[]; color: string; tags: string[];
 }
 
 const experiences: Exp[] = [
@@ -21,12 +15,12 @@ const experiences: Exp[] = [
     duration: "2024 — Present",
     type: "Full-time",
     color: "#FF2E2E",
-    description:
-      "Leading enterprise infrastructure transitions. Re-architected container scheduling and image build templates across the full CI/CD lifecycle.",
+    description: "Leading enterprise infrastructure transitions. Re-architected container scheduling and image build templates across the full CI/CD lifecycle.",
     metrics: [
       "CDK scripts reducing config drift to 0%",
-      "Managed 120+ microservice builds with Jenkins & GitOps",
+      "120+ microservice builds managed with Jenkins & GitOps",
     ],
+    tags: ["Kubernetes", "Terraform", "ArgoCD", "AWS", "Jenkins"],
   },
   {
     role: "DevOps & Cloud Engineer",
@@ -34,18 +28,13 @@ const experiences: Exp[] = [
     duration: "2023 — 2024",
     type: "Internship",
     color: "#8B5CF6",
-    description:
-      "Administered development compute environments. Configured DaemonSet exporters to track custom metrics and database transaction pool overflows.",
+    description: "Administered development compute environments. Configured DaemonSet exporters to track custom metrics and database transaction pool overflows.",
     metrics: [
       "Alert response latency ↓ 45%",
-      "CloudWatch + Grafana central dashboards integrated",
+      "CloudWatch + Grafana dashboards integrated",
     ],
+    tags: ["Prometheus", "Grafana", "Docker", "AWS", "Python"],
   },
-];
-
-const publications = [
-  { title: "Scaling GitOps with Confidence",    venue: "Medium",             date: "Jan 2026" },
-  { title: "K8s Resource Limits Secure Tuning", venue: "HashiCorp Community", date: "Oct 2025" },
 ];
 
 export default function ExperienceLogs() {
@@ -53,104 +42,90 @@ export default function ExperienceLogs() {
     <section id="experience" className="section-full">
       <div className="content-wrap">
 
-        {/* Heading */}
         <motion.div
           initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }} transition={{ duration: 0.5 }}
           className="mb-16"
         >
-          <p className="font-mono text-[11px] font-semibold tracking-[0.2em] uppercase text-[var(--lobster-red)] mb-2">Experience</p>
+          <p className="section-label">Experience</p>
           <h2 className="text-4xl font-black tracking-tight text-[var(--text-primary)]">Work History</h2>
           <span className="section-accent" />
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        <div className="space-y-5">
+          {experiences.map((exp, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.55, delay: i * 0.12, ease: "easeOut" }}
+              className="group relative glass-card overflow-hidden"
+            >
+              {/* Left colour rail */}
+              <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl" style={{ background: exp.color }} />
 
-          {/* ── Timeline cards ── */}
-          <div className="lg:col-span-2 space-y-5">
-            {experiences.map((exp, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.5, delay: i * 0.1, ease: "easeOut" }}
-                className="glass-card overflow-hidden"
-              >
-                {/* colour accent bar */}
-                <div className="h-0.5" style={{ background: `linear-gradient(90deg, ${exp.color}, transparent)` }} />
+              {/* Top gradient wash */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                style={{ background: `radial-gradient(ellipse at 0% 50%, ${exp.color}0D 0%, transparent 60%)` }} />
 
-                <div className="p-7">
-                  {/* Header */}
-                  <div className="flex flex-wrap items-start justify-between gap-4 mb-5">
-                    <div className="flex items-start gap-4">
-                      <div
-                        className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border border-[var(--accent-gray)]"
-                        style={{ background: `${exp.color}18` }}
-                      >
-                        <Briefcase className="h-4.5 w-4.5" style={{ color: exp.color }} />
+              <div className="pl-8 pr-7 py-7">
+                <div className="flex flex-col md:flex-row md:items-start justify-between gap-5">
+
+                  {/* Left: role info */}
+                  <div className="flex items-start gap-4 flex-1">
+                    <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 border border-[var(--accent-gray)] mt-0.5"
+                      style={{ background: `${exp.color}15` }}>
+                      <Briefcase className="h-5 w-5" style={{ color: exp.color }} />
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-xl text-[var(--text-primary)] leading-tight mb-1">{exp.role}</h3>
+
+                      <div className="flex flex-wrap items-center gap-3 mb-4">
+                        <div className="flex items-center gap-1.5 text-sm font-semibold" style={{ color: exp.color }}>
+                          <Building2 className="h-3.5 w-3.5" />
+                          {exp.company}
+                        </div>
+                        <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)] font-mono">
+                          <Calendar className="h-3 w-3" />
+                          {exp.duration}
+                        </div>
+                        <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full border"
+                          style={{ color: exp.color, borderColor: `${exp.color}40`, background: `${exp.color}10` }}>
+                          {exp.type}
+                        </span>
                       </div>
-                      <div>
-                        <h3 className="font-bold text-lg text-[var(--text-primary)] leading-tight">{exp.role}</h3>
-                        <p className="text-sm font-semibold mt-0.5" style={{ color: exp.color }}>{exp.company}</p>
+
+                      <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-5 max-w-2xl">
+                        {exp.description}
+                      </p>
+
+                      {/* Metrics */}
+                      <div className="flex flex-wrap gap-3 mb-5">
+                        {exp.metrics.map((m, j) => (
+                          <div key={j} className="flex items-center gap-2 text-xs text-emerald-400 bg-emerald-500/8 border border-emerald-500/20 px-3 py-1.5 rounded-lg">
+                            <TrendingUp className="h-3.5 w-3.5 shrink-0" />
+                            <span className="font-semibold">{m}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Tech tags */}
+                      <div className="flex flex-wrap gap-1.5">
+                        {exp.tags.map((t) => (
+                          <span key={t} className="tech-pill">{t}</span>
+                        ))}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="font-mono text-[10px] text-[var(--text-muted)] border border-[var(--accent-gray)] rounded-md px-2.5 py-1">
-                        {exp.type}
-                      </span>
-                      <span className="font-mono text-[10px] text-[var(--text-muted)] border border-[var(--accent-gray)] rounded-md px-2.5 py-1">
-                        {exp.duration}
-                      </span>
-                    </div>
                   </div>
 
-                  {/* Description */}
-                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-5">{exp.description}</p>
-
-                  {/* Key achievements */}
-                  <div className="space-y-2">
-                    {exp.metrics.map((m, j) => (
-                      <div key={j} className="flex items-center gap-2.5">
-                        <TrendingUp className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
-                        <span className="text-sm text-emerald-400">{m}</span>
-                      </div>
-                    ))}
-                  </div>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* ── Sidebar: Publications ── */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
-            className="glass-card p-6"
-          >
-            <div className="flex items-center gap-2 mb-6 pb-4 border-b border-[var(--accent-gray)]">
-              <MessageSquare className="h-4 w-4 text-[var(--lobster-red)]" />
-              <span className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
-                Publications
-              </span>
-            </div>
-
-            <div className="space-y-5">
-              {publications.map((a) => (
-                <div key={a.title} className="flex gap-3">
-                  <div className="w-0.5 bg-gradient-to-b from-[var(--lobster-red)] to-transparent rounded-full shrink-0 mt-1" />
-                  <div>
-                    <p className="text-sm font-semibold text-[var(--text-primary)] leading-snug">{a.title}</p>
-                    <p className="text-xs text-[var(--text-muted)] font-mono mt-1">{a.venue} · {a.date}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
+              </div>
+            </motion.div>
+          ))}
         </div>
+
       </div>
     </section>
   );
