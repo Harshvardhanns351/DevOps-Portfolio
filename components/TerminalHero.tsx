@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Play, ArrowDown } from "lucide-react";
+import { Play, ArrowDown, Mail } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 
 /* ── Neural-net canvas background ───────────────── */
@@ -240,49 +240,90 @@ export default function TerminalHero() {
       </div>
 
       <motion.div style={{ y: yText, opacity }} className="relative z-10 w-full max-w-[1400px] mx-auto px-6 xl:px-10">
-        <div className="flex flex-col lg:flex-row items-center gap-16">
+        <div className="flex flex-col lg:flex-row items-center gap-14">
 
-          {/* ── Left ──────────────────────────────── */}
+          {/* ── Left: Personal intro ───────────────── */}
           <div className="flex-1 flex flex-col items-start">
 
+            {/* Availability badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="mb-6 flex items-center gap-2.5 px-4 py-2 rounded-full border border-[var(--accent-gray)] bg-white/[0.025]"
+              transition={{ duration: 0.55, delay: 0.1 }}
+              className="mb-7 flex items-center gap-2.5 px-4 py-2 rounded-full border border-[var(--accent-gray)] bg-white/[0.025]"
             >
               <span className="status-dot online" />
               <span className="font-mono text-[11px] font-semibold tracking-[0.15em] text-[var(--text-secondary)] uppercase">
-                HVS · Deployment environment active
+                Open to opportunities
               </span>
             </motion.div>
 
+            {/* Photo + Name row */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, delay: 0.18 }}
+              className="flex items-center gap-5 mb-6"
+            >
+              {/* Profile photo — replace src with your actual photo path e.g. /photo.jpg */}
+              <div className="relative shrink-0">
+                <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-[var(--accent-gray)] bg-gradient-to-br from-[var(--lobster-red)]/20 to-[var(--deep-red)]/20">
+                  {/* If you have a photo: <img src="/photo.jpg" alt="Harshavardhan S" className="w-full h-full object-cover" /> */}
+                  {/* Placeholder monogram */}
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="font-black text-2xl gradient-text font-mono select-none">HS</span>
+                  </div>
+                </div>
+                {/* Online indicator */}
+                <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-[var(--bg-primary)] flex items-center justify-center">
+                  <span className="w-2 h-2 bg-emerald-300 rounded-full animate-ping absolute" />
+                  <span className="w-2 h-2 bg-emerald-400 rounded-full" />
+                </span>
+              </div>
+
+              <div>
+                <h2 className="text-2xl font-black tracking-tight text-[var(--text-primary)] leading-tight">
+                  Harshavardhan S
+                </h2>
+                <p className="text-sm text-[var(--text-secondary)] mt-1 font-medium">
+                  Cloud DevOps Engineer&nbsp;
+                  <span className="text-[var(--text-muted)]">·</span>&nbsp;
+                  2nd Year CS Student
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Big headline */}
             <motion.h1
               initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-[clamp(3rem,8vw,6rem)] font-black leading-[0.9] tracking-tighter mb-8"
+              transition={{ duration: 0.7, delay: 0.26 }}
+              className="text-[clamp(2.6rem,7vw,5.2rem)] font-black leading-[0.92] tracking-tighter mb-6"
             >
-              AUTO<span className="gradient-text">MATE</span><br />
-              PROVI<span className="gradient-text">SION</span><br />
+              AUTOMATE<br />
+              PROVISION<br />
               <span className="gradient-text">SCALE.</span>
             </motion.h1>
 
+            {/* Tagline */}
             <motion.p
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.35 }}
-              className="text-[var(--text-secondary)] text-lg leading-relaxed max-w-lg mb-10"
+              initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.36 }}
+              className="text-[var(--text-secondary)] text-base leading-relaxed max-w-md mb-9"
             >
-              Infrastructure architect building resilient systems — container
-              orchestration, declarative GitOps pipelines, and multi-cloud
-              automation at scale.
+              Building resilient cloud infrastructure through container orchestration,
+              declarative GitOps pipelines, and multi-cloud automation —
+              turning complex deployments into repeatable, auditable processes.
             </motion.p>
 
+            {/* CTAs */}
             <motion.div
-              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.45 }}
-              className="flex flex-wrap gap-3 mb-14"
+              initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.45 }}
+              className="flex flex-wrap gap-3 mb-12"
             >
               <a href="#projects" className="btn-primary gap-2">
-                <Play className="h-4 w-4 fill-current" /> View Projects
+                <Play className="h-4 w-4 fill-current" /> View My Work
+              </a>
+              <a href="#contact" className="btn-outline gap-2">
+                <Mail className="h-4 w-4" /> Contact Me
               </a>
               <a href="https://github.com/Harshvardhanns351" target="_blank" rel="noopener noreferrer"
                 className="btn-outline gap-2">
@@ -290,16 +331,16 @@ export default function TerminalHero() {
               </a>
             </motion.div>
 
-            {/* Stat counters */}
+            {/* Stats */}
             <motion.div
-              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.55 }}
-              className="grid grid-cols-3 gap-8 w-full max-w-sm"
+              initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.54 }}
+              className="flex gap-8"
             >
               {[
-                { to: 4, suffix: "+", label: "Projects" },
-                { to: 3, suffix: "",  label: "Certifications" },
-                { to: 60,suffix: "%", label: "Latency cut" },
+                { to: 4,  suffix: "+", label: "Projects shipped" },
+                { to: 3,  suffix: "",  label: "Certifications" },
+                { to: 60, suffix: "%", label: "Latency reduced" },
               ].map((s) => (
                 <div key={s.label} className="flex flex-col">
                   <span className="text-3xl font-black text-[var(--text-primary)] leading-none">
@@ -309,6 +350,7 @@ export default function TerminalHero() {
                 </div>
               ))}
             </motion.div>
+
           </div>
 
           {/* ── Right: Terminal ────────────────────── */}
