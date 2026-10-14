@@ -191,38 +191,139 @@ const commandFlow: Step[] = [
   },
 ];
 
+/* ── Tech orbit visualization ────────────────────── */
+const techStack = [
+  { label: "Kubernetes", color: "#3B82F6", icon: "K8s",  r: 155, angle: 0 },
+  { label: "Terraform",  color: "#8B5CF6", icon: "TF",   r: 155, angle: 72 },
+  { label: "Docker",     color: "#06B6D4", icon: "🐳",   r: 155, angle: 144 },
+  { label: "AWS",        color: "#F59E0B", icon: "AWS",  r: 155, angle: 216 },
+  { label: "ArgoCD",     color: "#FF2E2E", icon: "Argo", r: 155, angle: 288 },
+  { label: "Prometheus", color: "#E05A00", icon: "Prom", r: 95,  angle: 36 },
+  { label: "Grafana",    color: "#FF6B35", icon: "Graf", r: 95,  angle: 108 },
+  { label: "GitHub",     color: "#F1F2F6", icon: "GH",   r: 95,  angle: 180 },
+  { label: "Python",     color: "#22C55E", icon: "Py",   r: 95,  angle: 252 },
+  { label: "Bash",       color: "#10B981", icon: "Bash", r: 95,  angle: 324 },
+];
+
+function TechOrbit() {
+  const cx = 220, cy = 220;
+
+  return (
+    <div className="relative w-full" style={{ maxWidth: 440, aspectRatio: "1" }}>
+
+      {/* Outer glow */}
+      <div className="absolute inset-0 rounded-full bg-[var(--lobster-red)]/4 blur-[60px] pointer-events-none" />
+
+      <svg viewBox="0 0 440 440" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        {/* Orbit ring 1 */}
+        <circle cx={cx} cy={cy} r="155" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="1" strokeDasharray="4 6" />
+        {/* Orbit ring 2 */}
+        <circle cx={cx} cy={cy} r="95" fill="none" stroke="rgba(255,46,46,0.08)" strokeWidth="1" strokeDasharray="3 5" />
+        {/* Orbit ring 3 — innermost */}
+        <circle cx={cx} cy={cy} r="48" fill="none" stroke="rgba(255,46,46,0.12)" strokeWidth="1" />
+
+        {/* Central HVS core */}
+        <circle cx={cx} cy={cy} r="44" fill="#0A0A0E" stroke="rgba(255,46,46,0.35)" strokeWidth="1.5" />
+        <circle cx={cx} cy={cy} r="38" fill="url(#coreGrad)" opacity="0.9" />
+        <text x={cx} y={cy+6} textAnchor="middle" fill="#F1F2F6"
+          fontSize="15" fontWeight="900" fontFamily="JetBrains Mono, monospace">HVS</text>
+
+        {/* Outer orbit nodes */}
+        {techStack.map((t, i) => {
+          const rad = (t.angle * Math.PI) / 180;
+          const x = cx + t.r * Math.cos(rad);
+          const y = cy + t.r * Math.sin(rad);
+          const isOuter = t.r > 100;
+          const nodeR = isOuter ? 24 : 20;
+          return (
+            <g key={t.label}>
+              {/* Connection line to centre */}
+              <line x1={cx} y1={cy} x2={x} y2={y}
+                stroke={t.color} strokeWidth="0.5" opacity="0.15" />
+              {/* Node circle */}
+              <circle cx={x} cy={y} r={nodeR}
+                fill="#0A0A0E" stroke={t.color} strokeWidth="1.5" opacity="0.9" />
+              {/* Label */}
+              <text x={x} y={y + 4} textAnchor="middle"
+                fill={t.color} fontSize={isOuter ? "7.5" : "7"}
+                fontWeight="700" fontFamily="JetBrains Mono, monospace">
+                {t.icon}
+              </text>
+            </g>
+          );
+        })}
+
+        <defs>
+          <radialGradient id="coreGrad" cx="50%" cy="30%" r="60%">
+            <stop offset="0%" stopColor="#FF2E2E" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#0A0A0E" stopOpacity="0.8" />
+          </radialGradient>
+        </defs>
+      </svg>
+
+      {/* Animated outer ring — CSS rotation */}
+      <div className="absolute inset-0 pointer-events-none" style={{ animation: "spin-cw 28s linear infinite" }}>
+        <svg viewBox="0 0 440 440" className="w-full h-full">
+          <circle cx="220" cy="220" r="155" fill="none"
+            stroke="url(#ringGrad)" strokeWidth="1.5"
+            strokeDasharray="30 320" strokeLinecap="round" />
+          <defs>
+            <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#FF2E2E" stopOpacity="0" />
+              <stop offset="50%" stopColor="#FF2E2E" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="#FF2E2E" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      {/* Animated inner ring — reverse rotation */}
+      <div className="absolute inset-0 pointer-events-none" style={{ animation: "spin-ccw 18s linear infinite" }}>
+        <svg viewBox="0 0 440 440" className="w-full h-full">
+          <circle cx="220" cy="220" r="95" fill="none"
+            stroke="url(#ringGrad2)" strokeWidth="1.5"
+            strokeDasharray="20 180" strokeLinecap="round" />
+          <defs>
+            <linearGradient id="ringGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0" />
+              <stop offset="50%" stopColor="#8B5CF6" stopOpacity="0.7" />
+              <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      {/* Floating badge labels around outer nodes */}
+      {techStack.filter(t => t.r > 100).map((t) => {
+        const rad = (t.angle * Math.PI) / 180;
+        const x = 220 + t.r * Math.cos(rad);
+        const y = 220 + t.r * Math.sin(rad);
+        // offset label outward
+        const lx = 220 + (t.r + 40) * Math.cos(rad);
+        const ly = 220 + (t.r + 40) * Math.sin(rad);
+        const pct = `${((lx / 440) * 100).toFixed(1)}%`;
+        const pct2 = `${((ly / 440) * 100).toFixed(1)}%`;
+        return (
+          <div
+            key={t.label + "-label"}
+            className="absolute text-[9px] font-mono font-bold pointer-events-none"
+            style={{ left: pct, top: pct2, transform: "translate(-50%,-50%)", color: t.color, opacity: 0.65 }}
+          >
+            {t.label}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 /* ── Hero ────────────────────────────────────────── */
 export default function TerminalHero() {
-  const [visible, setVisible] = useState<number[]>([]);
-  const [tidx,    setTidx]    = useState(0);
-  const [typed,   setTyped]   = useState("");
-  const termRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start","end start"] });
   const yText   = useTransform(scrollYProgress, [0,1], ["0%","18%"]);
   const opacity = useTransform(scrollYProgress, [0,0.6], [1, 0]);
-
-  /* Typing */
-  useEffect(() => {
-    if (tidx >= commandFlow.length) return;
-    const step = commandFlow[tidx];
-    let c = 0, t = "";
-    const id = setInterval(() => {
-      if (c < step.command.length) { t += step.command[c++]; setTyped(t); }
-      else {
-        clearInterval(id);
-        setTimeout(() => {
-          setVisible((p) => [...p, tidx]);
-          setTyped("");
-          setTidx((p) => p + 1);
-        }, step.delay);
-      }
-    }, 28);
-    return () => clearInterval(id);
-  }, [tidx]);
-
-  useEffect(() => { termRef.current?.scrollIntoView({ behavior: "smooth" }); }, [visible, typed]);
 
   return (
     <section ref={sectionRef} className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden grid-bg py-24 px-5">
@@ -352,6 +453,16 @@ export default function TerminalHero() {
             </motion.div>
 
           </div>
+
+          {/* ── Right: Animated tech visualization ── */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.35 }}
+            className="flex-1 w-full max-w-xl flex items-center justify-center relative"
+            style={{ minHeight: 460 }}
+          >
+            <TechOrbit />
+          </motion.div>
 
         </div>
       </motion.div>
