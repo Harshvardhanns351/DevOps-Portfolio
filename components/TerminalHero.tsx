@@ -286,7 +286,7 @@ export default function TerminalHero() {
                 <p className="text-sm text-[var(--text-secondary)] mt-1 font-medium">
                   Cloud DevOps Engineer&nbsp;
                   <span className="text-[var(--text-muted)]">·</span>&nbsp;
-                  2nd Year CS Student
+                  3rd Year CS Student
                 </p>
               </div>
             </motion.div>
@@ -352,76 +352,6 @@ export default function TerminalHero() {
             </motion.div>
 
           </div>
-
-          {/* ── Right: Terminal ────────────────────── */}
-          <motion.div
-            initial={{ opacity: 0, x: 40, scale: 0.96 }} animate={{ opacity: 1, x: 0, scale: 1 }}
-            transition={{ duration: 0.75, delay: 0.3 }}
-            className="flex-1 w-full max-w-2xl"
-          >
-            {/* Glow ring */}
-            <div className="absolute -inset-4 rounded-2xl bg-gradient-to-br from-[var(--lobster-red)]/10 via-transparent to-[var(--deep-red)]/10 blur-2xl pointer-events-none" />
-
-            <div className="relative glass-card overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.7)] scan-overlay">
-
-              {/* Title bar */}
-              <div className="flex items-center justify-between px-4 py-3 bg-[#040408] border-b border-[var(--accent-gray)]">
-                <div className="flex gap-1.5">
-                  <span className="w-3 h-3 rounded-full bg-[#FF5F57]" />
-                  <span className="w-3 h-3 rounded-full bg-[#FEBC2E] opacity-60" />
-                  <span className="w-3 h-3 rounded-full bg-[#28C840] opacity-60" />
-                </div>
-                <span className="font-mono text-[11px] text-[var(--text-muted)]">hvs — bash</span>
-                <span className="flex items-center gap-1.5 font-mono text-[10px] text-emerald-400 font-bold">
-                  <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping" /> SECURE
-                </span>
-              </div>
-
-              {/* Body */}
-              <div className="p-5 h-[380px] md:h-[420px] overflow-y-auto font-mono text-xs leading-relaxed bg-[#010104]/80 space-y-2.5 scrollbar-none">
-                <div className="text-[var(--text-muted)]">Last login: {new Date().toLocaleDateString()}</div>
-
-                {visible.map((i) => {
-                  const s = commandFlow[i];
-                  return (
-                    <div key={i} className="space-y-0.5">
-                      <div className="flex items-center gap-1.5 text-[var(--lobster-red)] font-semibold">
-                        <span className="text-[var(--text-muted)] select-none">$</span>
-                        <span>{s.command}</span>
-                      </div>
-                      <div className="pl-0 text-[var(--text-secondary)]">
-                        {typeof s.output === "function" ? s.output() : s.output}
-                      </div>
-                    </div>
-                  );
-                })}
-
-                {tidx < commandFlow.length && (
-                  <div className="flex items-center gap-1.5 font-semibold">
-                    <span className="text-[var(--text-muted)] select-none">$</span>
-                    <span className="text-[var(--lobster-red)]">
-                      {typed}<span className="inline-block w-[7px] h-[13px] bg-[var(--lobster-red)] cursor-blink ml-0.5 align-middle" />
-                    </span>
-                  </div>
-                )}
-
-                {tidx >= commandFlow.length && (
-                  <div className="mt-3 pt-3 border-t border-[var(--accent-gray)] flex items-center gap-1.5">
-                    <span className="text-[var(--text-muted)] select-none">$</span>
-                    <span className="ml-1 inline-block w-[7px] h-[13px] bg-[var(--text-muted)] cursor-blink" />
-                  </div>
-                )}
-                <div ref={termRef} />
-              </div>
-
-              {/* Status bar */}
-              <div className="flex items-center justify-between px-4 py-2 bg-[var(--lobster-red)] text-black font-mono text-[10px] font-bold">
-                <span>NORMAL</span>
-                <span>bash · UTF-8 · LF</span>
-                <span>Ln {visible.length + 1}, Col 1</span>
-              </div>
-            </div>
-          </motion.div>
 
         </div>
       </motion.div>
