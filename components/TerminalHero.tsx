@@ -132,188 +132,286 @@ function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
   return <span ref={ref}>{val}{suffix}</span>;
 }
 
-/* ── Terminal data ───────────────────────────────── */
-interface Step { command: string; output: string | (() => React.ReactNode); delay: number; }
-
-const MiniTable = ({ cols, rows }: { cols: string[]; rows: string[][] }) => (
-  <div className="font-mono text-[10px] mt-1.5 border border-[var(--accent-gray)] rounded-lg overflow-hidden">
-    <div className="grid bg-white/[0.03] border-b border-[var(--accent-gray)] px-3 py-1.5 text-[var(--text-muted)] font-bold"
-      style={{ gridTemplateColumns: `repeat(${cols.length}, 1fr)` }}>
-      {cols.map((c) => <span key={c}>{c}</span>)}
-    </div>
-    {rows.map((row, i) => (
-      <div key={i} className="grid px-3 py-1.5 border-b border-[var(--accent-gray)] last:border-0"
-        style={{ gridTemplateColumns: `repeat(${cols.length}, 1fr)` }}>
-        {row.map((cell, j) => (
-          <span key={j} className={
-            j === 0 ? "text-[var(--lobster-red)]" :
-            ["Running","Ready"].includes(cell) || cell.startsWith("Up") ? "text-emerald-400" :
-            "text-[var(--text-secondary)]"
-          }>{cell}</span>
-        ))}
-      </div>
-    ))}
-  </div>
-);
-
-const commandFlow: Step[] = [
-  { command: 'echo "Initializing HVS DevOps Console..."', output: "Boot sequence complete — TLS 1.3 session authorized.", delay: 600 },
-  { command: "whoami", output: "Harshavardhan S  ·  Cloud & DevOps Engineer  ·  Infrastructure Architect", delay: 800 },
-  {
-    command: "docker ps --format table",
-    output: () => <MiniTable cols={["CONTAINER","IMAGE","STATUS","NAME"]} rows={[
-      ["cf822bd840aa","eks-micro:v2.1","Up 47h","eks-prod-api"],
-      ["fa1009cf29bb","argocd:v1.9","Running","argocd-sync"],
-      ["229bbf949d01","grafana:v3","Up 14d","sys-observe"],
-    ]} />,
-    delay: 1000,
-  },
-  {
-    command: "kubectl get nodes -o wide",
-    output: () => <MiniTable cols={["NAME","STATUS","ROLE","VERSION"]} rows={[
-      ["harsh-master-01","Ready","control-plane","v1.28.2"],
-      ["harsh-worker-01","Ready","worker","v1.28.2"],
-    ]} />,
-    delay: 1200,
-  },
-  {
-    command: "terraform apply -auto-approve",
-    output: () => (
-      <div className="text-[10px] font-mono mt-1 space-y-0.5">
-        <div className="text-[var(--text-muted)]">aws_vpc.main: Creating…</div>
-        <div className="text-emerald-400">aws_vpc.main: Creation complete [ID: vpc-0fa2e89d8f]</div>
-        <div className="text-[var(--text-muted)]">aws_eks_cluster.prod: Creating…</div>
-        <div className="text-emerald-400">aws_eks_cluster.prod: Creation complete [ID: hvs-k8s-prod]</div>
-        <div className="text-[var(--lobster-red)] font-bold mt-1">Apply complete! 18 added, 0 changed, 0 destroyed.</div>
-      </div>
-    ),
-    delay: 1400,
-  },
-];
-
-/* ── Tech orbit visualization ────────────────────── */
-const techStack = [
-  { label: "Kubernetes", color: "#3B82F6", icon: "K8s",  r: 155, angle: 0 },
-  { label: "Terraform",  color: "#8B5CF6", icon: "TF",   r: 155, angle: 72 },
-  { label: "Docker",     color: "#06B6D4", icon: "🐳",   r: 155, angle: 144 },
-  { label: "AWS",        color: "#F59E0B", icon: "AWS",  r: 155, angle: 216 },
-  { label: "ArgoCD",     color: "#FF2E2E", icon: "Argo", r: 155, angle: 288 },
-  { label: "Prometheus", color: "#E05A00", icon: "Prom", r: 95,  angle: 36 },
-  { label: "Grafana",    color: "#FF6B35", icon: "Graf", r: 95,  angle: 108 },
-  { label: "GitHub",     color: "#F1F2F6", icon: "GH",   r: 95,  angle: 180 },
-  { label: "Python",     color: "#22C55E", icon: "Py",   r: 95,  angle: 252 },
-  { label: "Bash",       color: "#10B981", icon: "Bash", r: 95,  angle: 324 },
-];
-
-function TechOrbit() {
-  const cx = 220, cy = 220;
+/* ── 3D Cloud Infrastructure Visualization ──────── */
+function CloudScene() {
+  // Mouse parallax
+  const [mouse, setMouse] = React.useState({ x: 0, y: 0 });
+  React.useEffect(() => {
+    const fn = (e: MouseEvent) => {
+      setMouse({
+        x: (e.clientX / window.innerWidth  - 0.5) * 18,
+        y: (e.clientY / window.innerHeight - 0.5) * 12,
+      });
+    };
+    window.addEventListener("mousemove", fn);
+    return () => window.removeEventListener("mousemove", fn);
+  }, []);
 
   return (
-    <div className="relative w-full" style={{ maxWidth: 440, aspectRatio: "1" }}>
+    <div className="relative w-full select-none" style={{ maxWidth: 500, aspectRatio: "1 / 1.05" }}>
 
-      {/* Outer glow */}
-      <div className="absolute inset-0 rounded-full bg-[var(--lobster-red)]/4 blur-[60px] pointer-events-none" />
-
-      <svg viewBox="0 0 440 440" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-        {/* Orbit ring 1 */}
-        <circle cx={cx} cy={cy} r="155" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="1" strokeDasharray="4 6" />
-        {/* Orbit ring 2 */}
-        <circle cx={cx} cy={cy} r="95" fill="none" stroke="rgba(255,46,46,0.08)" strokeWidth="1" strokeDasharray="3 5" />
-        {/* Orbit ring 3 — innermost */}
-        <circle cx={cx} cy={cy} r="48" fill="none" stroke="rgba(255,46,46,0.12)" strokeWidth="1" />
-
-        {/* Central HVS core */}
-        <circle cx={cx} cy={cy} r="44" fill="#0A0A0E" stroke="rgba(255,46,46,0.35)" strokeWidth="1.5" />
-        <circle cx={cx} cy={cy} r="38" fill="url(#coreGrad)" opacity="0.9" />
-        <text x={cx} y={cy+6} textAnchor="middle" fill="#F1F2F6"
-          fontSize="15" fontWeight="900" fontFamily="JetBrains Mono, monospace">HVS</text>
-
-        {/* Outer orbit nodes */}
-        {techStack.map((t, i) => {
-          const rad = (t.angle * Math.PI) / 180;
-          const x = cx + t.r * Math.cos(rad);
-          const y = cy + t.r * Math.sin(rad);
-          const isOuter = t.r > 100;
-          const nodeR = isOuter ? 24 : 20;
-          return (
-            <g key={t.label}>
-              {/* Connection line to centre */}
-              <line x1={cx} y1={cy} x2={x} y2={y}
-                stroke={t.color} strokeWidth="0.5" opacity="0.15" />
-              {/* Node circle */}
-              <circle cx={x} cy={y} r={nodeR}
-                fill="#0A0A0E" stroke={t.color} strokeWidth="1.5" opacity="0.9" />
-              {/* Label */}
-              <text x={x} y={y + 4} textAnchor="middle"
-                fill={t.color} fontSize={isOuter ? "7.5" : "7"}
-                fontWeight="700" fontFamily="JetBrains Mono, monospace">
-                {t.icon}
-              </text>
-            </g>
-          );
-        })}
-
-        <defs>
-          <radialGradient id="coreGrad" cx="50%" cy="30%" r="60%">
-            <stop offset="0%" stopColor="#FF2E2E" stopOpacity="0.35" />
-            <stop offset="100%" stopColor="#0A0A0E" stopOpacity="0.8" />
-          </radialGradient>
-        </defs>
-      </svg>
-
-      {/* Animated outer ring — CSS rotation */}
-      <div className="absolute inset-0 pointer-events-none" style={{ animation: "spin-cw 28s linear infinite" }}>
-        <svg viewBox="0 0 440 440" className="w-full h-full">
-          <circle cx="220" cy="220" r="155" fill="none"
-            stroke="url(#ringGrad)" strokeWidth="1.5"
-            strokeDasharray="30 320" strokeLinecap="round" />
-          <defs>
-            <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#FF2E2E" stopOpacity="0" />
-              <stop offset="50%" stopColor="#FF2E2E" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#FF2E2E" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-        </svg>
+      {/* ── Ambient depth glows ── */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-[15%] left-[20%] w-48 h-48 rounded-full bg-[var(--lobster-red)]/12 blur-[70px]" />
+        <div className="absolute bottom-[15%] right-[15%] w-40 h-40 rounded-full bg-[#8B5CF6]/12 blur-[60px]" />
+        <div className="absolute top-[55%] left-[10%] w-32 h-32 rounded-full bg-[#06B6D4]/10 blur-[50px]" />
       </div>
 
-      {/* Animated inner ring — reverse rotation */}
-      <div className="absolute inset-0 pointer-events-none" style={{ animation: "spin-ccw 18s linear infinite" }}>
-        <svg viewBox="0 0 440 440" className="w-full h-full">
-          <circle cx="220" cy="220" r="95" fill="none"
-            stroke="url(#ringGrad2)" strokeWidth="1.5"
-            strokeDasharray="20 180" strokeLinecap="round" />
-          <defs>
-            <linearGradient id="ringGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0" />
-              <stop offset="50%" stopColor="#8B5CF6" stopOpacity="0.7" />
-              <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
+      {/* ── 3D perspective wrapper ── */}
+      <motion.div
+        className="absolute inset-0"
+        animate={{ rotateX: -mouse.y * 0.4, rotateY: mouse.x * 0.4 }}
+        transition={{ type: "spring", stiffness: 80, damping: 20 }}
+        style={{ perspective: 900, transformStyle: "preserve-3d" }}
+      >
 
-      {/* Floating badge labels around outer nodes */}
-      {techStack.filter(t => t.r > 100).map((t) => {
-        const rad = (t.angle * Math.PI) / 180;
-        const x = 220 + t.r * Math.cos(rad);
-        const y = 220 + t.r * Math.sin(rad);
-        // offset label outward
-        const lx = 220 + (t.r + 40) * Math.cos(rad);
-        const ly = 220 + (t.r + 40) * Math.sin(rad);
-        const pct = `${((lx / 440) * 100).toFixed(1)}%`;
-        const pct2 = `${((ly / 440) * 100).toFixed(1)}%`;
-        return (
-          <div
-            key={t.label + "-label"}
-            className="absolute text-[9px] font-mono font-bold pointer-events-none"
-            style={{ left: pct, top: pct2, transform: "translate(-50%,-50%)", color: t.color, opacity: 0.65 }}
+        {/* ── Isometric grid floor ── */}
+        <motion.div
+          className="absolute bottom-[5%] left-1/2 -translate-x-1/2"
+          style={{ width: 360, height: 180, transformStyle: "preserve-3d" }}
+          animate={{ rotateX: [60, 62, 60] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <svg viewBox="0 0 360 180" width="360" height="180" className="opacity-20">
+            <defs>
+              <pattern id="grid3d" width="30" height="30" patternUnits="userSpaceOnUse">
+                <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255,46,46,0.5)" strokeWidth="0.5"/>
+              </pattern>
+            </defs>
+            <rect width="360" height="180" fill="url(#grid3d)" />
+            <rect width="360" height="180" fill="url(#floorFade)" />
+            <defs>
+              <radialGradient id="floorFade" cx="50%" cy="50%" r="70%">
+                <stop offset="0%" stopColor="#020204" stopOpacity="0"/>
+                <stop offset="100%" stopColor="#020204" stopOpacity="0.95"/>
+              </radialGradient>
+            </defs>
+          </svg>
+        </motion.div>
+
+        {/* ── Server rack — back left ── */}
+        <motion.div
+          className="absolute"
+          style={{ left: "4%", top: "18%", transformStyle: "preserve-3d" }}
+          animate={{ y: [0, -6, 0] }}
+          transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 0 }}
+        >
+          <ServerRack color="#FF2E2E" label="EKS-PROD" status="ONLINE" utilization={88} delay={0} />
+        </motion.div>
+
+        {/* ── Server rack — back right ── */}
+        <motion.div
+          className="absolute"
+          style={{ right: "4%", top: "12%", transformStyle: "preserve-3d" }}
+          animate={{ y: [0, -8, 0] }}
+          transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+        >
+          <ServerRack color="#8B5CF6" label="TF-CLOUD" status="SYNCING" utilization={62} delay={0.3} />
+        </motion.div>
+
+        {/* ── Floating metric cards ── */}
+        <motion.div
+          className="absolute"
+          style={{ left: "50%", top: "6%", x: "-50%" }}
+          animate={{ y: [0, -10, 0], rotateZ: [-1, 1, -1] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <MetricCard label="CPU Load" value="14%" trend="↓" color="#10B981" icon="⚡" />
+        </motion.div>
+
+        <motion.div
+          className="absolute"
+          style={{ left: "5%", bottom: "28%" }}
+          animate={{ y: [0, -7, 0], rotateZ: [1, -1, 1] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
+        >
+          <MetricCard label="Pods" value="24/24" trend="✓" color="#3B82F6" icon="☸" />
+        </motion.div>
+
+        <motion.div
+          className="absolute"
+          style={{ right: "5%", bottom: "30%" }}
+          animate={{ y: [0, -9, 0], rotateZ: [-0.5, 0.5, -0.5] }}
+          transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
+        >
+          <MetricCard label="Uptime" value="99.9%" trend="↑" color="#F59E0B" icon="☁" />
+        </motion.div>
+
+        {/* ── Central 3D core sphere ── */}
+        <motion.div
+          className="absolute left-1/2 top-[34%] -translate-x-1/2 -translate-y-1/2"
+          animate={{
+            scale: [1, 1.04, 1],
+            rotate: [0, 360],
+          }}
+          transition={{
+            scale:  { duration: 3, repeat: Infinity, ease: "easeInOut" },
+            rotate: { duration: 20, repeat: Infinity, ease: "linear" },
+          }}
+        >
+          <CoreSphere />
+        </motion.div>
+
+        {/* ── Animated data stream lines ── */}
+        <DataStreams />
+
+        {/* ── Floating tech badges ── */}
+        {[
+          { label: "Docker",     color: "#06B6D4", x: "14%",  y: "62%", delay: 0 },
+          { label: "ArgoCD",    color: "#FF2E2E", x: "76%",  y: "60%", delay: 0.6 },
+          { label: "Prometheus",color: "#E05A00", x: "42%",  y: "76%", delay: 1.1 },
+          { label: "Grafana",   color: "#FF6B35", x: "24%",  y: "40%", delay: 0.4 },
+          { label: "Kubernetes",color: "#3B82F6", x: "68%",  y: "38%", delay: 0.9 },
+        ].map((b) => (
+          <motion.div
+            key={b.label}
+            className="absolute"
+            style={{ left: b.x, top: b.y }}
+            animate={{ y: [0, -5, 0], opacity: [0.7, 1, 0.7] }}
+            transition={{ duration: 3 + Math.random(), repeat: Infinity, ease: "easeInOut", delay: b.delay }}
           >
-            {t.label}
-          </div>
-        );
-      })}
+            <TechBadge label={b.label} color={b.color} />
+          </motion.div>
+        ))}
+
+      </motion.div>
+
     </div>
+  );
+}
+
+/* ── Sub-components ──────────────────────────────── */
+
+function ServerRack({ color, label, status, utilization, delay }: {
+  color: string; label: string; status: string; utilization: number; delay: number;
+}) {
+  return (
+    <div className="relative" style={{ width: 100, perspective: 400 }}>
+      {/* 3D box — top face */}
+      <div className="absolute -top-2 left-2 right-0 h-2 rounded-sm opacity-60"
+        style={{ background: color, transform: "rotateX(-60deg) scaleY(0.4)", transformOrigin: "bottom" }} />
+      {/* 3D box — right face */}
+      <div className="absolute top-0 -right-2 bottom-0 w-2 rounded-sm opacity-30"
+        style={{ background: color, transform: "rotateY(60deg) scaleX(0.4)", transformOrigin: "left" }} />
+      {/* Front face */}
+      <div className="rounded-xl border overflow-hidden"
+        style={{ background: "rgba(8,8,14,0.95)", borderColor: `${color}50`, width: 100 }}>
+        {/* Header */}
+        <div className="px-2.5 py-1.5 flex items-center justify-between border-b"
+          style={{ borderColor: `${color}30`, background: `${color}12` }}>
+          <span className="font-mono text-[8px] font-bold" style={{ color }}>{label}</span>
+          <span className="flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: status === "ONLINE" ? "#10B981" : "#F59E0B" }} />
+            <span className="font-mono text-[7px]" style={{ color: status === "ONLINE" ? "#10B981" : "#F59E0B" }}>{status}</span>
+          </span>
+        </div>
+        {/* Drive bays */}
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="mx-2 my-1 h-1.5 rounded-full overflow-hidden bg-white/[0.05]">
+            <motion.div className="h-full rounded-full"
+              style={{ background: `linear-gradient(90deg, ${color}80, ${color})` }}
+              initial={{ width: 0 }}
+              animate={{ width: `${30 + i * 18}%` }}
+              transition={{ duration: 1.2, delay: delay + i * 0.15, ease: "easeOut" }}
+            />
+          </div>
+        ))}
+        {/* Utilization */}
+        <div className="px-2.5 py-1.5 flex justify-between">
+          <span className="font-mono text-[7px] text-[var(--text-muted)]">CPU</span>
+          <span className="font-mono text-[7px] font-bold" style={{ color }}>{utilization}%</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MetricCard({ label, value, trend, color, icon }: {
+  label: string; value: string; trend: string; color: string; icon: string;
+}) {
+  return (
+    <div className="rounded-xl border px-3.5 py-2.5 backdrop-blur-xl"
+      style={{ background: "rgba(8,8,14,0.85)", borderColor: `${color}35`, minWidth: 90 }}>
+      <div className="flex items-center gap-1.5 mb-1">
+        <span className="text-sm">{icon}</span>
+        <span className="font-mono text-[9px] text-[var(--text-muted)] uppercase tracking-wider">{label}</span>
+      </div>
+      <div className="flex items-end gap-1.5">
+        <span className="font-black text-base leading-none" style={{ color }}>{value}</span>
+        <span className="text-xs font-bold mb-0.5" style={{ color }}>{trend}</span>
+      </div>
+    </div>
+  );
+}
+
+function TechBadge({ label, color }: { label: string; color: string }) {
+  return (
+    <div className="rounded-full px-2.5 py-1 border backdrop-blur-sm flex items-center gap-1.5"
+      style={{ background: `${color}12`, borderColor: `${color}40` }}>
+      <span className="w-1.5 h-1.5 rounded-full" style={{ background: color }} />
+      <span className="font-mono text-[9px] font-bold" style={{ color }}>{label}</span>
+    </div>
+  );
+}
+
+function CoreSphere() {
+  return (
+    <div className="relative" style={{ width: 90, height: 90 }}>
+      {/* Outer glow ring */}
+      <div className="absolute inset-[-12px] rounded-full border-2 border-[var(--lobster-red)]/20 animate-ping" style={{ animationDuration: "2.5s" }} />
+      <div className="absolute inset-[-6px] rounded-full border border-[var(--lobster-red)]/30" />
+      {/* Sphere */}
+      <div className="w-full h-full rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(255,46,46,0.4)]"
+        style={{
+          background: "radial-gradient(circle at 35% 35%, #FF5050 0%, #CC0000 40%, #4A0000 80%, #0A0A0E 100%)",
+          border: "1.5px solid rgba(255,46,46,0.5)",
+        }}>
+        <span className="font-black text-white text-sm font-mono drop-shadow-lg">HVS</span>
+      </div>
+      {/* Equator ring */}
+      <div className="absolute top-1/2 left-0 right-0 h-px -translate-y-1/2 rounded-full"
+        style={{ background: "linear-gradient(90deg, transparent, rgba(255,46,46,0.5), transparent)" }} />
+    </div>
+  );
+}
+
+function DataStreams() {
+  const streams = [
+    { x1: 20,  y1: 160, x2: 200, y2: 200, color: "#FF2E2E", dur: 2.2 },
+    { x1: 380, y1: 140, x2: 220, y2: 195, color: "#8B5CF6", dur: 2.8 },
+    { x1: 80,  y1: 300, x2: 200, y2: 210, color: "#10B981", dur: 2.0 },
+    { x1: 340, y1: 310, x2: 220, y2: 205, color: "#F59E0B", dur: 3.1 },
+    { x1: 190, y1: 60,  x2: 205, y2: 185, color: "#06B6D4", dur: 1.8 },
+  ];
+
+  return (
+    <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 420">
+      <defs>
+        {streams.map((s, i) => (
+          <linearGradient key={i} id={`sg${i}`} x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor={s.color} stopOpacity="0" />
+            <stop offset="50%" stopColor={s.color} stopOpacity="0.8" />
+            <stop offset="100%" stopColor={s.color} stopOpacity="0" />
+          </linearGradient>
+        ))}
+      </defs>
+      {streams.map((s, i) => (
+        <line key={i} x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2}
+          stroke={`url(#sg${i})`} strokeWidth="1.5" strokeDasharray="6 8">
+          <animate attributeName="stroke-dashoffset" from="100" to="-100"
+            dur={`${s.dur}s`} repeatCount="indefinite" />
+        </line>
+      ))}
+      {/* Pulsing dot at sphere */}
+      {[...Array(5)].map((_, i) => (
+        <circle key={i} cx="210" cy="200" r="3" fill={streams[i].color} opacity="0.6">
+          <animate attributeName="r" values="2;6;2" dur={`${streams[i].dur}s`} repeatCount="indefinite"
+            begin={`${i * 0.6}s`} />
+          <animate attributeName="opacity" values="0.6;0;0.6" dur={`${streams[i].dur}s`} repeatCount="indefinite"
+            begin={`${i * 0.6}s`} />
+        </circle>
+      ))}
+    </svg>
   );
 }
 
@@ -461,7 +559,7 @@ export default function TerminalHero() {
             className="flex-1 w-full max-w-xl flex items-center justify-center relative"
             style={{ minHeight: 460 }}
           >
-            <TechOrbit />
+            <CloudScene />
           </motion.div>
 
         </div>
